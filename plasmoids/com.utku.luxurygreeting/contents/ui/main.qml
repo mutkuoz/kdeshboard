@@ -165,9 +165,9 @@ PlasmoidItem {
                 Text {
                     id: dropCap
                     text: root.dropCapLetter
-                    color: Shared.Palette.wax
-                    font.family: Shared.Palette.fontInitial
-                    font.pixelSize: 56
+                    color: Shared.Palette.burgundy
+                    font.family: Shared.Palette.fontDisplay
+                    font.pixelSize: 48
                     SequentialAnimation on opacity {
                         loops: Animation.Infinite
                         NumberAnimation { from: 0.92; to: 1.0; duration: 3000; easing.type: Easing.InOutSine }
