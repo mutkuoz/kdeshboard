@@ -46,6 +46,11 @@ PLASMOIDS=(
     com.utku.journalclock
     com.utku.journalweather
     com.utku.journalnowplaying
+    com.utku.systeminfo
+    com.utku.analogclock
+    com.utku.almanac
+    com.utku.commonplacebook
+    com.utku.hourglass
 )
 
 say "Removing plasmoids"

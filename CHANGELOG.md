@@ -3,6 +3,31 @@
 All notable changes to this project will be documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- Five new plasmoids:
+  - `com.utku.systeminfo` — 3×3 gauge grid for CPU/GPU/mem/disk/net/ping/battery.
+  - `com.utku.analogclock` — analog clock in a wax-seal or postage-stamp housing.
+  - `com.utku.almanac` — ordinal date, season, moon, day count, event countdown.
+  - `com.utku.commonplacebook` — rotating quote, built-in pool + optional file.
+  - `com.utku.hourglass` — Pomodoro timer drawn as a draining hourglass.
+- `backgroundOpacity` (10–100%) and `edgeStyle` (rounded/ripped/deckle/
+  stamped/embossed) config for every plasmoid, wired to
+  `ParchmentBackground`.
+
+### Changed
+- `ParchmentBackground` now honors `alpha` on its base fill while keeping
+  noise and foxing at their natural opacity, scaled by the factor.
+- Luxury Greeting drop-cap now uses Parisienne (display font) so the
+  first letter visually matches the rest of the phrase.
+
+### Fixed
+- Weather and NowPlaying DataSource queries: `LABEL: cmd` prefix routing
+  broke under `/bin/sh -c` which tried to execute `LABEL:` as a command.
+  Moved the routing tag to a trailing `#MARKER` shell comment.
+- NowPlaying now prefers `qdbus6` over `qdbus`, matching Plasma 6 hosts.
+
 ## [0.1.0] — 2026-04-24
 
 ### Added
