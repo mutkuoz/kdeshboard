@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "Utilities",
+    "Description": "Adaptive greeting in cursive with a journal date line",
+    "Icon": "preferences-desktop-notification",
+    "Id": "com.utku.luxurygreeting",
+    "License": "MIT",
+    "Name": "Luxury Greeting",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
