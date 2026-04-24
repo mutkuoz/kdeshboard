@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "System Information",
+    "Description": "Tails a tmux pane into a leather-bound panel",
+    "Icon": "utilities-terminal",
+    "Id": "com.utku.tmuxtail",
+    "License": "MIT",
+    "Name": "Tmux Tail",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "System Information",
+    "Description": "Weather as a diary forecast, from OpenMeteo",
+    "Icon": "weather-few-clouds",
+    "Id": "com.utku.journalweather",
+    "License": "MIT",
+    "Name": "Journal Weather",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

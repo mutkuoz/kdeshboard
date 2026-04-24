@@ -1,0 +1,5 @@
+module shared
+singleton Palette 1.0 Palette.qml
+Ornaments 1.0 Ornaments.qml
+ParchmentBackground 1.0 ParchmentBackground.qml
+MoonPhase 1.0 MoonPhase.qml
