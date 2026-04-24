@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+                          http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name="almanacrc"/>
+  <group name="General">
+    <entry name="upcomingLabel" type="String">
+      <default>new year</default>
+    </entry>
+    <entry name="upcomingDate" type="String">
+      <default>12-31</default>
+    </entry>
+    <entry name="hemisphere" type="String">
+      <default>north</default>
+    </entry>
+    <entry name="backgroundOpacity" type="Double">
+      <default>1.0</default>
+      <min>0.0</min>
+      <max>1.0</max>
+    </entry>
+    <entry name="edgeStyle" type="String">
+      <default>rounded</default>
+    </entry>
+  </group>
+</kcfg>
