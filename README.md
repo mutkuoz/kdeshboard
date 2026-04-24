@@ -29,9 +29,11 @@ Three moving pieces — all the rest is Plasma itself:
    - **System Info** — compact 3×3 donut-gauge grid: CPU%, CPU temp,
      memory, GPU%, GPU temp, disk, battery, network, ping. Unavailable
      metrics show as dimmed "—" tiles.
-   - **Analog Clock** — a clock face housed in a wax seal (burgundy disc
-     with gilt Roman numerals) or a postage stamp (perforated, with a
-     postmark), switchable from config.
+   - **Analog Clock** — a clock face in one of three housings: a wax
+     seal (burgundy disc with gilt Roman numerals), a postage stamp
+     (perforated, with a postmark), or a vintage watch dial (gilt bezel,
+     baton indices, dauphine hands, and a moon-phase complication at 6
+     o'clock). Switch from the config dialog.
    - **Almanac** — ordinal date, season, moon phase, day-of-year,
      countdown to a configured event. No network.
    - **Commonplace Book** — a rotating quote with attribution. 20

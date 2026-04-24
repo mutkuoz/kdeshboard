@@ -21,6 +21,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   noise and foxing at their natural opacity, scaled by the factor.
 - Luxury Greeting drop-cap now uses Parisienne (display font) so the
   first letter visually matches the rest of the phrase.
+- Analog Clock gains a third housing — **Vintage watch**: gilt bezel,
+  cream dial with radial highlight, applied baton indices (larger at
+  12/3/6/9), minute-track dots, dauphine hour/minute hands with burgundy
+  seconds hand, configurable brand + subtitle, and a working moon-phase
+  complication at 6 o'clock (navy aperture, starfield, moon sliding
+  across the window with actual lunar phase).
 
 ### Fixed
 - Weather and NowPlaying DataSource queries: `LABEL: cmd` prefix routing

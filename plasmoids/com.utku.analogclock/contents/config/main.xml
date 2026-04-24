@@ -17,5 +17,11 @@
     <entry name="stampLabel" type="String">
       <default>POSTE · L.J.</default>
     </entry>
+    <entry name="watchBrand" type="String">
+      <default>LUXURY JOURNAL</default>
+    </entry>
+    <entry name="watchSubtitle" type="String">
+      <default>AUTOMATIC</default>
+    </entry>
   </group>
 </kcfg>

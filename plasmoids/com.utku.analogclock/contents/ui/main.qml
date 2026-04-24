@@ -9,10 +9,12 @@ PlasmoidItem {
 
     preferredRepresentation: fullRepresentation
 
-    property string mode:             Plasmoid.configuration.mode        // "seal" | "stamp"
+    property string mode:             Plasmoid.configuration.mode        // "seal" | "stamp" | "watch"
     property bool   showSeconds:      Plasmoid.configuration.showSeconds
     property bool   useRomanNumerals: Plasmoid.configuration.useRomanNumerals
     property string stampLabel:       Plasmoid.configuration.stampLabel
+    property string watchBrand:       Plasmoid.configuration.watchBrand
+    property string watchSubtitle:    Plasmoid.configuration.watchSubtitle
 
     property date currentTime: new Date()
     Timer {
@@ -211,6 +213,247 @@ PlasmoidItem {
                     showSeconds:     root.showSeconds
                     useRomanNumerals: root.useRomanNumerals
                     currentTime:     root.currentTime
+                }
+            }
+        }
+
+        // ========= VINTAGE WATCH MODE =========
+        Item {
+            anchors.fill: parent
+            anchors.margins: 4
+            visible: root.mode === "watch"
+
+            Item {
+                id: watchCase
+                anchors.centerIn: parent
+                width: Math.min(parent.width, parent.height)
+                height: width
+
+                // Outer gilt bezel (slight gradient feel via two rings)
+                Rectangle {
+                    anchors.fill: parent
+                    radius: width / 2
+                    color: Qt.darker(Shared.Palette.gilt, 1.15)
+                    antialiasing: true
+                }
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 3
+                    radius: width / 2
+                    color: Shared.Palette.gilt
+                    antialiasing: true
+                }
+
+                // Dial — everything is rendered on this Canvas so updates stay cheap
+                Canvas {
+                    id: watchDial
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    antialiasing: true
+
+                    function moonPhase(d) {
+                        const julian = d.getTime() / 86400000 + 2440587.5
+                        const age = ((julian - 2451549.5) % 29.53059 + 29.53059) % 29.53059
+                        return age / 29.53059   // 0..1 fraction of cycle
+                    }
+
+                    function drawDauphine(ctx, angle, tipLen, baseLen, halfW, color, outlineColor) {
+                        // Elongated diamond: base at -baseLen (behind pivot), tip at +tipLen (outward).
+                        // angle: 0 = up (12 o'clock), clockwise +.
+                        ctx.save()
+                        ctx.rotate(angle)
+                        ctx.beginPath()
+                        ctx.moveTo(0, -tipLen)        // tip (pointing to 12)
+                        ctx.lineTo(halfW,  -tipLen * 0.18)
+                        ctx.lineTo(0,  baseLen)       // tail
+                        ctx.lineTo(-halfW, -tipLen * 0.18)
+                        ctx.closePath()
+                        ctx.fillStyle = color
+                        ctx.fill()
+                        if (outlineColor) {
+                            ctx.strokeStyle = outlineColor
+                            ctx.lineWidth = 0.6
+                            ctx.stroke()
+                        }
+                        ctx.restore()
+                    }
+
+                    onPaint: {
+                        const ctx = getContext("2d")
+                        ctx.reset()
+                        const cx = width / 2
+                        const cy = height / 2
+                        const r  = Math.min(cx, cy)
+
+                        // Dial face — cream with a subtle radial highlight.
+                        const grad = ctx.createRadialGradient(cx, cy - r * 0.25, r * 0.1, cx, cy, r)
+                        grad.addColorStop(0, Qt.lighter(Shared.Palette.parchment, 1.08))
+                        grad.addColorStop(1, Shared.Palette.parchment)
+                        ctx.fillStyle = grad
+                        ctx.beginPath()
+                        ctx.arc(cx, cy, r, 0, 2 * Math.PI)
+                        ctx.fill()
+
+                        // Inner hairline ring (ink)
+                        ctx.strokeStyle = Shared.Palette.inkDark
+                        ctx.lineWidth = 0.6
+                        ctx.globalAlpha = 0.5
+                        ctx.beginPath()
+                        ctx.arc(cx, cy, r * 0.92, 0, 2 * Math.PI)
+                        ctx.stroke()
+                        ctx.globalAlpha = 1.0
+
+                        // Minute track — 60 tiny ink dots just inside the hairline ring
+                        ctx.fillStyle = Shared.Palette.inkDark
+                        for (let i = 0; i < 60; i++) {
+                            const a = i * Math.PI / 30 - Math.PI / 2
+                            const rx = cx + Math.cos(a) * r * 0.885
+                            const ry = cy + Math.sin(a) * r * 0.885
+                            const dot = i % 5 === 0 ? 1.4 : 0.7
+                            ctx.beginPath()
+                            ctx.arc(rx, ry, dot, 0, 2 * Math.PI)
+                            ctx.fill()
+                        }
+
+                        // Applied hour batons — gilt-colored slim indices; larger at 12/3/6/9
+                        for (let i = 0; i < 12; i++) {
+                            const a = i * Math.PI / 6 - Math.PI / 2
+                            const cardinal = i % 3 === 0
+                            const len = r * (cardinal ? 0.16 : 0.11)
+                            const outer = r * 0.84
+                            const inner = outer - len
+                            const thick = cardinal ? 2.5 : 1.4
+                            ctx.strokeStyle = Qt.darker(Shared.Palette.gilt, 1.1)
+                            ctx.lineCap = "round"
+                            ctx.lineWidth = thick
+                            ctx.beginPath()
+                            ctx.moveTo(cx + Math.cos(a) * outer, cy + Math.sin(a) * outer)
+                            ctx.lineTo(cx + Math.cos(a) * inner, cy + Math.sin(a) * inner)
+                            ctx.stroke()
+                        }
+
+                        // Brand, just under 12
+                        ctx.fillStyle = Shared.Palette.inkDark
+                        ctx.textAlign    = "center"
+                        ctx.textBaseline = "middle"
+                        ctx.font = "600 " + Math.max(7, r * 0.09) + "px 'Cormorant SC'"
+                        if (root.watchBrand) ctx.fillText(root.watchBrand, cx, cy - r * 0.42)
+                        ctx.font = "italic " + Math.max(6, r * 0.07) + "px 'Cormorant Garamond'"
+                        ctx.fillStyle = Shared.Palette.burgundy
+                        if (root.watchSubtitle) ctx.fillText(root.watchSubtitle, cx, cy - r * 0.29)
+
+                        // Moon-phase complication — circular aperture at ~6 o'clock.
+                        const mcx = cx
+                        const mcy = cy + r * 0.40
+                        const mr  = r * 0.17
+
+                        // Aperture frame
+                        ctx.fillStyle = Qt.rgba(0.09, 0.10, 0.18, 1)     // navy night
+                        ctx.beginPath()
+                        ctx.arc(mcx, mcy, mr, 0, 2 * Math.PI)
+                        ctx.fill()
+                        ctx.strokeStyle = Qt.darker(Shared.Palette.gilt, 1.2)
+                        ctx.lineWidth = 1
+                        ctx.stroke()
+
+                        // Starfield — six small gilt stars sprinkled in the night
+                        ctx.fillStyle = Qt.rgba(Shared.Palette.gilt.r, Shared.Palette.gilt.g, Shared.Palette.gilt.b, 0.85)
+                        const stars = [
+                            [-0.55, -0.30], [ 0.48, -0.42], [-0.25,  0.45],
+                            [ 0.60,  0.10], [ 0.15, -0.55], [-0.62,  0.18]
+                        ]
+                        for (const s of stars) {
+                            ctx.beginPath()
+                            ctx.arc(mcx + s[0] * mr, mcy + s[1] * mr, 0.7, 0, 2 * Math.PI)
+                            ctx.fill()
+                        }
+
+                        // Moon disc — position slides horizontally with phase.
+                        // phase 0..1 → x offset: -1 (new, hidden left) → 0 (full, centered) → +1 (new, hidden right).
+                        // Aperture clips with a circular path; moon is slightly smaller than the aperture.
+                        const phase = moonPhase(root.currentTime)
+                        // Position on a full rotation: 0..0.5 = moon traveling right (waxing), 0.5..1 = traveling right through full to new again (waning).
+                        // Translate phase to offset in [-1.5 .. 1.5], where |offset| > 1 hides the moon entirely.
+                        const offset = (phase < 0.5 ? (phase * 4 - 1) : ((phase - 0.5) * 4 + 1))
+                        const moonR = mr * 0.68
+                        const moonX = mcx + offset * mr * 0.95
+                        const moonY = mcy - mr * 0.05
+
+                        ctx.save()
+                        ctx.beginPath()
+                        ctx.arc(mcx, mcy, mr - 1, 0, 2 * Math.PI)
+                        ctx.clip()
+                        // Moon body
+                        const mGrad = ctx.createRadialGradient(moonX - moonR * 0.3, moonY - moonR * 0.3,
+                                                               moonR * 0.15, moonX, moonY, moonR)
+                        mGrad.addColorStop(0, Qt.lighter(Shared.Palette.parchment, 1.05))
+                        mGrad.addColorStop(1, Qt.darker(Shared.Palette.parchment, 1.12))
+                        ctx.fillStyle = mGrad
+                        ctx.beginPath()
+                        ctx.arc(moonX, moonY, moonR, 0, 2 * Math.PI)
+                        ctx.fill()
+                        // Three dim craters
+                        ctx.fillStyle = Qt.rgba(0, 0, 0, 0.10)
+                        const craters = [[-0.25, -0.15, 0.18], [0.18, 0.05, 0.12], [-0.05, 0.28, 0.10]]
+                        for (const c of craters) {
+                            ctx.beginPath()
+                            ctx.arc(moonX + c[0] * moonR, moonY + c[1] * moonR, c[2] * moonR, 0, 2 * Math.PI)
+                            ctx.fill()
+                        }
+                        ctx.restore()
+
+                        // ---- Hands ----
+                        const t = root.currentTime
+                        const secs = t.getSeconds() + t.getMilliseconds() / 1000
+                        const mins = t.getMinutes() + secs / 60
+                        const hrs  = (t.getHours() % 12) + mins / 60
+                        const hourAngle   = hrs  * Math.PI / 6
+                        const minuteAngle = mins * Math.PI / 30
+                        const secondAngle = secs * Math.PI / 30
+
+                        ctx.save()
+                        ctx.translate(cx, cy)
+                        drawDauphine(ctx, hourAngle,   r * 0.52, r * 0.12, r * 0.05,
+                                     Shared.Palette.inkDark, Shared.Palette.gilt)
+                        drawDauphine(ctx, minuteAngle, r * 0.74, r * 0.14, r * 0.035,
+                                     Shared.Palette.inkDark, Shared.Palette.gilt)
+                        if (root.showSeconds) {
+                            ctx.save()
+                            ctx.rotate(secondAngle)
+                            ctx.strokeStyle = Shared.Palette.burgundy
+                            ctx.lineWidth = 1.2
+                            ctx.lineCap = "round"
+                            ctx.beginPath()
+                            ctx.moveTo(0, r * 0.15)
+                            ctx.lineTo(0, -r * 0.80)
+                            ctx.stroke()
+                            // Counterweight disc
+                            ctx.fillStyle = Shared.Palette.burgundy
+                            ctx.beginPath()
+                            ctx.arc(0, r * 0.13, r * 0.032, 0, 2 * Math.PI)
+                            ctx.fill()
+                            ctx.restore()
+                        }
+                        ctx.restore()
+
+                        // Center pin
+                        ctx.fillStyle = Qt.darker(Shared.Palette.gilt, 1.1)
+                        ctx.beginPath()
+                        ctx.arc(cx, cy, r * 0.038, 0, 2 * Math.PI)
+                        ctx.fill()
+                        ctx.strokeStyle = Shared.Palette.inkDark
+                        ctx.lineWidth = 0.6
+                        ctx.stroke()
+                    }
+                    Connections {
+                        target: root
+                        function onCurrentTimeChanged()   { watchDial.requestPaint() }
+                        function onShowSecondsChanged()   { watchDial.requestPaint() }
+                        function onWatchBrandChanged()    { watchDial.requestPaint() }
+                        function onWatchSubtitleChanged() { watchDial.requestPaint() }
+                    }
+                    onWidthChanged:  requestPaint()
+                    onHeightChanged: requestPaint()
                 }
             }
         }

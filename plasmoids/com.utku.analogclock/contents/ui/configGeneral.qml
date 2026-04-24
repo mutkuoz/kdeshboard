@@ -8,6 +8,8 @@ Kirigami.FormLayout {
     property alias cfg_showSeconds:       secondsBox.checked
     property alias cfg_useRomanNumerals:  romanBox.checked
     property alias cfg_stampLabel:        stampField.text
+    property alias cfg_watchBrand:        brandField.text
+    property alias cfg_watchSubtitle:     subtitleField.text
 
     ComboBox {
         id: modeCombo
@@ -16,8 +18,9 @@ Kirigami.FormLayout {
         valueRole: "value"
         property string selectedValue: "seal"
         model: [
-            { text: "Wax seal",     value: "seal"  },
-            { text: "Letter stamp", value: "stamp" }
+            { text: "Wax seal",      value: "seal"  },
+            { text: "Letter stamp",  value: "stamp" },
+            { text: "Vintage watch", value: "watch" }
         ]
         Component.onCompleted: {
             const idx = model.findIndex(m => m.value === selectedValue)
@@ -26,10 +29,20 @@ Kirigami.FormLayout {
         onActivated: selectedValue = currentValue
     }
     CheckBox { id: secondsBox; Kirigami.FormData.label: "Show seconds hand:" }
-    CheckBox { id: romanBox;   Kirigami.FormData.label: "Roman numerals:" }
+    CheckBox { id: romanBox;   Kirigami.FormData.label: "Roman numerals (seal/stamp):" }
     TextField {
         id: stampField
         Kirigami.FormData.label: "Stamp caption:"
         placeholderText: "shown on postage-stamp mode"
+    }
+    TextField {
+        id: brandField
+        Kirigami.FormData.label: "Watch brand:"
+        placeholderText: "shown under 12 o'clock"
+    }
+    TextField {
+        id: subtitleField
+        Kirigami.FormData.label: "Watch subtitle:"
+        placeholderText: "shown above 6 o'clock"
     }
 }
