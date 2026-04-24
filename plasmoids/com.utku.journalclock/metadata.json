@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "Date and Time",
+    "Description": "Serif clock with moon-phase glyph",
+    "Icon": "clock",
+    "Id": "com.utku.journalclock",
+    "License": "MIT",
+    "Name": "Journal Clock",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
