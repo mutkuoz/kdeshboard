@@ -17,5 +17,13 @@
     <entry name="refreshMs" type="Int">
       <default>2000</default>
     </entry>
+    <entry name="backgroundOpacity" type="Double">
+      <default>1.0</default>
+      <min>0.0</min>
+      <max>1.0</max>
+    </entry>
+    <entry name="edgeStyle" type="String">
+      <default>rounded</default>
+    </entry>
   </group>
 </kcfg>

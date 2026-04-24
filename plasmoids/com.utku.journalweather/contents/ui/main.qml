@@ -177,7 +177,11 @@ PlasmoidItem {
         Layout.minimumWidth: 280
         Layout.minimumHeight: 100
 
-        Shared.ParchmentBackground { anchors.fill: parent }
+        Shared.ParchmentBackground {
+            anchors.fill: parent
+            alpha:     Plasmoid.configuration.backgroundOpacity
+            edgeStyle: Plasmoid.configuration.edgeStyle
+        }
         Loader { sourceComponent: Shared.Ornaments.PageCorner; anchors.top: parent.top; anchors.right: parent.right }
 
         ColumnLayout {

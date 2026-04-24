@@ -142,6 +142,8 @@ PlasmoidItem {
 
         Shared.ParchmentBackground {
             anchors.fill: parent
+            alpha:     Plasmoid.configuration.backgroundOpacity
+            edgeStyle: Plasmoid.configuration.edgeStyle
         }
 
         Loader {

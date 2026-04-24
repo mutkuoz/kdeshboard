@@ -110,7 +110,11 @@ PlasmoidItem {
         opacity: root.title === "" ? 0.7 : 1.0
         Behavior on opacity { NumberAnimation { duration: 200 } }
 
-        Shared.ParchmentBackground { anchors.fill: parent }
+        Shared.ParchmentBackground {
+            anchors.fill: parent
+            alpha:     Plasmoid.configuration.backgroundOpacity
+            edgeStyle: Plasmoid.configuration.edgeStyle
+        }
         Loader { sourceComponent: Shared.Ornaments.PageCorner; anchors.top: parent.top; anchors.right: parent.right }
 
         ColumnLayout {
