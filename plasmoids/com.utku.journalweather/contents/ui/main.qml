@@ -75,7 +75,7 @@ PlasmoidItem {
         onNewData: function(sourceName, data) {
             const stdout = data["stdout"] || ""
             const exit = data["exit code"]
-            if (sourceName.startsWith("GEOCODE:")) {
+            if (sourceName.indexOf("#GEOCODE") !== -1) {
                 try {
                     const body = stdout.slice(stdout.indexOf("{"))
                     const json = JSON.parse(body)
@@ -88,7 +88,7 @@ PlasmoidItem {
                         setSilent()
                     }
                 } catch (e) { console.warn("geocoding parse:", e); setSilent() }
-            } else if (sourceName.startsWith("FORECAST:")) {
+            } else if (sourceName.indexOf("#FORECAST") !== -1) {
                 try {
                     const body = stdout.slice(stdout.indexOf("{"))
                     const json = JSON.parse(body)
@@ -131,7 +131,8 @@ PlasmoidItem {
     function fetchGeocode() {
         const url = "https://geocoding-api.open-meteo.com/v1/search?count=1&name="
                     + encodeURIComponent(cityName)
-        executable.exec("GEOCODE: curl -sS --max-time 10 " + shellQuote(url))
+        // Trailing shell comment keeps the marker in sourceName while being a no-op to the shell.
+        executable.exec("curl -sS --max-time 10 " + shellQuote(url) + " #GEOCODE")
     }
 
     function fetchForecast() {
@@ -142,7 +143,7 @@ PlasmoidItem {
                   + "&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m"
                   + "&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max"
                   + "&timezone=auto&forecast_days=3" + u
-        executable.exec("FORECAST: curl -sS --max-time 10 " + shellQuote(url))
+        executable.exec("curl -sS --max-time 10 " + shellQuote(url) + " #FORECAST")
     }
 
     function shellQuote(s) { return "'" + s.replace(/'/g, "'\\''") + "'" }
@@ -176,7 +177,11 @@ PlasmoidItem {
         Layout.minimumWidth: 280
         Layout.minimumHeight: 100
 
-        Shared.ParchmentBackground { anchors.fill: parent }
+        Shared.ParchmentBackground {
+            anchors.fill: parent
+            alpha:     Plasmoid.configuration.backgroundOpacity
+            edgeStyle: Plasmoid.configuration.edgeStyle
+        }
         Loader { sourceComponent: Shared.Ornaments.PageCorner; anchors.top: parent.top; anchors.right: parent.right }
 
         ColumnLayout {

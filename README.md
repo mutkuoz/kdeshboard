@@ -15,17 +15,36 @@ Three moving pieces — all the rest is Plasma itself:
 2. **Nine fonts** installed user-local: Parisienne, Caveat, Cormorant
    Garamond (Light / Regular / Medium / SemiBold), Cormorant SC, IM FELL
    DW Pica, JetBrains Mono.
-3. **Six custom plasmoids**, all self-contained after install:
+3. **Eleven custom plasmoids**, all self-contained after install:
    - **Luxury Greeting** — cursive greeting that rotates with the day and
-     the week. Drop-cap in IM FELL DW Pica with a faint breathing opacity.
+     the week, with a Parisienne drop-cap that gently breathes.
    - **Tmux Tail** — the last N lines of a tmux pane, refreshed on a
      timer. Double-click to attach.
    - **Journal Tasks** — reads `~/notes/tasks.md`, parses `## headers`
      and `- [ ]` checkboxes, click to toggle, inline add-entry field.
-   - **Journal Clock** — serif time with a moon-phase glyph.
+   - **Journal Clock** — serif digital time with a moon-phase glyph.
    - **Journal Weather** — OpenMeteo (no API key), three lines of journal
      prose.
    - **Journal NowPlaying** — MPRIS via qdbus, hover for ◁◁ ❙❙ ▷▷ controls.
+   - **System Info** — compact 3×3 donut-gauge grid: CPU%, CPU temp,
+     memory, GPU%, GPU temp, disk, battery, network, ping. Unavailable
+     metrics show as dimmed "—" tiles.
+   - **Analog Clock** — a clock face in one of three housings: a wax
+     seal (burgundy disc with gilt Roman numerals), a postage stamp
+     (perforated, with a postmark), or a vintage watch dial (gilt bezel,
+     baton indices, dauphine hands, and a moon-phase complication at 6
+     o'clock). Switch from the config dialog.
+   - **Almanac** — ordinal date, season, moon phase, day-of-year,
+     countdown to a configured event. No network.
+   - **Commonplace Book** — a rotating quote with attribution. 20
+     built-in classical quotes; an optional `~/notes/quotes.txt` overrides
+     them (`quote | attribution` lines).
+   - **Hourglass** — Pomodoro count-down drawn as an hourglass with
+     gilt sand draining between bulbs. Optional command on completion.
+
+   Every plasmoid has per-instance **background opacity** (10–100%) and
+   an **edge style** (rounded, ripped paper, deckle, postage-stamp
+   perforations, embossed) under the wrench icon.
 
 ## Install
 

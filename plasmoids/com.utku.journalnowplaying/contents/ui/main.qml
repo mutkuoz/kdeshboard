@@ -27,7 +27,7 @@ PlasmoidItem {
 
         onNewData: function(sourceName, data) {
             const stdout = (data["stdout"] || "").trim()
-            if (sourceName === "LIST") {
+            if (sourceName.indexOf("#LIST") !== -1) {
                 const services = stdout.split("\n").filter(s => s.startsWith("org.mpris.MediaPlayer2."))
                 if (preferredPlayer) {
                     const match = services.find(s => s.toLowerCase().endsWith("." + preferredPlayer.toLowerCase()))
@@ -37,12 +37,12 @@ PlasmoidItem {
                 }
                 if (currentPlayer) queryMetadata()
                 else resetEmpty()
-            } else if (sourceName.startsWith("META:")) {
+            } else if (sourceName.indexOf("#META") !== -1) {
                 parseMetadata(stdout)
-            } else if (sourceName.startsWith("STATUS:")) {
+            } else if (sourceName.indexOf("#STATUS") !== -1) {
                 const m = stdout.match(/Playing|Paused|Stopped/)
                 status = m ? m[0] : "Stopped"
-            } else if (sourceName.startsWith("POSITION:")) {
+            } else if (sourceName.indexOf("#POSITION") !== -1) {
                 const n = parseInt(stdout, 10)
                 if (!isNaN(n)) position = n
             }
@@ -76,17 +76,21 @@ PlasmoidItem {
     }
 
     function queryList() {
-        executable.exec("LIST: qdbus 2>/dev/null | grep ^org.mpris.MediaPlayer2")
+        // Trailing shell comment tags each query for routing in onNewData while
+        // staying a no-op to /bin/sh. Try qdbus6 first (Plasma 6 default), then qdbus.
+        executable.exec("(qdbus6 2>/dev/null || qdbus 2>/dev/null) | grep ^org.mpris.MediaPlayer2 #LIST")
     }
     function queryMetadata() {
         if (!currentPlayer) return
-        executable.exec("META: qdbus " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Metadata")
-        executable.exec("STATUS: qdbus " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus")
-        executable.exec("POSITION: qdbus " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Position")
+        const qd = "(command -v qdbus6 >/dev/null && qdbus6 || qdbus)"
+        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Metadata #META")
+        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus #STATUS")
+        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Position #POSITION")
     }
     function control(method) {
         if (!currentPlayer) return
-        executable.exec("qdbus " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player." + method)
+        const qd = "(command -v qdbus6 >/dev/null && qdbus6 || qdbus)"
+        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player." + method)
     }
 
     Timer {
@@ -106,7 +110,11 @@ PlasmoidItem {
         opacity: root.title === "" ? 0.7 : 1.0
         Behavior on opacity { NumberAnimation { duration: 200 } }
 
-        Shared.ParchmentBackground { anchors.fill: parent }
+        Shared.ParchmentBackground {
+            anchors.fill: parent
+            alpha:     Plasmoid.configuration.backgroundOpacity
+            edgeStyle: Plasmoid.configuration.edgeStyle
+        }
         Loader { sourceComponent: Shared.Ornaments.PageCorner; anchors.top: parent.top; anchors.right: parent.right }
 
         ColumnLayout {

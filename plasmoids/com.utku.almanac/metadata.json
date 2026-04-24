@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "Date and Time",
+    "Description": "Day-book almanac — season, moon, day count, countdown",
+    "Icon": "view-calendar",
+    "Id": "com.utku.almanac",
+    "License": "MIT",
+    "Name": "Almanac",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

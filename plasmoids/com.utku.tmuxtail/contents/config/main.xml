@@ -17,5 +17,13 @@
     <entry name="attachCommand" type="String">
       <default>konsole -e tmux attach -t research</default>
     </entry>
+    <entry name="backgroundOpacity" type="Double">
+      <default>1.0</default>
+      <min>0.0</min>
+      <max>1.0</max>
+    </entry>
+    <entry name="edgeStyle" type="String">
+      <default>rounded</default>
+    </entry>
   </group>
 </kcfg>

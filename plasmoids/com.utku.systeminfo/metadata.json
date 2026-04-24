@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "System Information",
+    "Description": "Instrumentation panel — battery, CPU, GPU, memory, disk, network, ping",
+    "Icon": "utilities-system-monitor",
+    "Id": "com.utku.systeminfo",
+    "License": "MIT",
+    "Name": "System Info",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

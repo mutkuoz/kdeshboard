@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "Utilities",
+    "Description": "A commonplace book — a rotating quote with attribution",
+    "Icon": "view-pim-notes",
+    "Id": "com.utku.commonplacebook",
+    "License": "MIT",
+    "Name": "Commonplace Book",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
