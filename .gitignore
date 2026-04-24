@@ -1,0 +1,13 @@
+# OS & editor cruft
+*.swp
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Shared QML is the single source of truth in shared/qml/.
+# install.sh and dev.sh copy it into each plasmoid at install time;
+# the copy must never be committed.
+plasmoids/*/contents/ui/shared/
