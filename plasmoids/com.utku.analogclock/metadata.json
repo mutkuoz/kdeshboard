@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "Date and Time",
+    "Description": "Analog clock housed in a wax seal or a postage stamp",
+    "Icon": "clock",
+    "Id": "com.utku.analogclock",
+    "License": "MIT",
+    "Name": "Analog Clock",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
