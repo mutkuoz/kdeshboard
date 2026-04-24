@@ -1,0 +1,46 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck libxml2-utils jq python3
+          # qmllint-qt6 ships with qt6-declarative-dev on Ubuntu.
+          sudo apt-get install -y qt6-declarative-dev || true
+
+      - name: shellcheck
+        run: shellcheck install.sh uninstall.sh dev.sh
+
+      - name: metadata.json
+        run: |
+          set -e
+          for f in plasmoids/*/metadata.json; do
+            jq -e . "$f" > /dev/null
+          done
+
+      - name: main.xml
+        run: xmllint --noout plasmoids/*/contents/config/main.xml
+
+      - name: color scheme
+        run: python3 tools/validate_colors.py luxury-journal.colors
+
+      - name: qmllint (non-fatal in CI)
+        continue-on-error: true
+        run: |
+          QMLLINT="$(command -v qmllint-qt6 || command -v qmllint6 || command -v qmllint || echo)"
+          if [[ -n "$QMLLINT" ]]; then
+            "$QMLLINT" plasmoids/*/contents/ui/*.qml shared/qml/*.qml
+          else
+            echo "qmllint not available on runner; skipped"
+          fi
+        shell: bash
