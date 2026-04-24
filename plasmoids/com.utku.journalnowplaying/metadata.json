@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "Multimedia",
+    "Description": "Now playing, as a gramophone entry",
+    "Icon": "media-playback-start",
+    "Id": "com.utku.journalnowplaying",
+    "License": "MIT",
+    "Name": "Journal NowPlaying",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
