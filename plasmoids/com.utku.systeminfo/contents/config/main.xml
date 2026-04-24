@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+                          http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name="systeminforc"/>
+  <group name="General">
+    <entry name="refreshMs" type="Int">
+      <default>2000</default>
+    </entry>
+    <entry name="pingTarget" type="String">
+      <default>1.1.1.1</default>
+    </entry>
+    <entry name="netInterfaceFilter" type="String">
+      <default></default>
+    </entry>
+    <entry name="showGpu" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showPing" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="backgroundOpacity" type="Double">
+      <default>1.0</default>
+      <min>0.0</min>
+      <max>1.0</max>
+    </entry>
+    <entry name="edgeStyle" type="String">
+      <default>rounded</default>
+    </entry>
+  </group>
+</kcfg>
