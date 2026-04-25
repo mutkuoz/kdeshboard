@@ -10,6 +10,7 @@ COLOR_DIR="$HOME/.local/share/color-schemes"
 DRY_RUN=0
 NO_FONTS=0
 FORCE=0
+NO_RESTART=0
 
 usage() {
     cat <<EOF
@@ -19,16 +20,19 @@ Options:
   --dry-run     Print actions without executing them
   --no-fonts    Skip font downloads (use existing installs)
   --force       Overwrite color scheme even if it differs from the repo copy
+  --no-restart  Don't restart plasmashell at the end (you'll need to refresh
+                widgets manually for the new code to load)
   -h, --help    Show this help
 EOF
 }
 
 for arg in "$@"; do
     case "$arg" in
-        --dry-run) DRY_RUN=1 ;;
-        --no-fonts) NO_FONTS=1 ;;
-        --force)   FORCE=1 ;;
-        -h|--help) usage; exit 0 ;;
+        --dry-run)   DRY_RUN=1 ;;
+        --no-fonts)  NO_FONTS=1 ;;
+        --force)     FORCE=1 ;;
+        --no-restart) NO_RESTART=1 ;;
+        -h|--help)   usage; exit 0 ;;
         *) echo "unknown argument: $arg" >&2; usage >&2; exit 2 ;;
     esac
 done
@@ -59,15 +63,18 @@ preflight() {
 }
 
 # ---- Fonts -----------------------------------------------------------------
+# All URLs verified against google/fonts main branch. Cormorant Garamond
+# upstream switched to a single variable font (CormorantGaramond[wght].ttf)
+# so we no longer download the four static weights — Qt's font.weight axis
+# applies to the variable font directly. IM Fell DW Pica's roman file was
+# renamed to IMFePIrm28P.ttf in the Google Fonts repo even though the family
+# name registered with Qt is still "IM Fell DW Pica".
 declare -A FONT_URLS=(
     [Parisienne-Regular.ttf]="https://github.com/google/fonts/raw/main/ofl/parisienne/Parisienne-Regular.ttf"
     [Caveat.ttf]="https://github.com/google/fonts/raw/main/ofl/caveat/Caveat%5Bwght%5D.ttf"
-    [CormorantGaramond-Light.ttf]="https://github.com/google/fonts/raw/main/ofl/cormorantgaramond/CormorantGaramond-Light.ttf"
-    [CormorantGaramond-Regular.ttf]="https://github.com/google/fonts/raw/main/ofl/cormorantgaramond/CormorantGaramond-Regular.ttf"
-    [CormorantGaramond-Medium.ttf]="https://github.com/google/fonts/raw/main/ofl/cormorantgaramond/CormorantGaramond-Medium.ttf"
-    [CormorantGaramond-SemiBold.ttf]="https://github.com/google/fonts/raw/main/ofl/cormorantgaramond/CormorantGaramond-SemiBold.ttf"
+    [CormorantGaramond.ttf]="https://github.com/google/fonts/raw/main/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf"
     [CormorantSC-Medium.ttf]="https://github.com/google/fonts/raw/main/ofl/cormorantsc/CormorantSC-Medium.ttf"
-    [IMFellDWPica-Regular.ttf]="https://github.com/google/fonts/raw/main/ofl/imfelldwpica/IMFellDWPica-Regular.ttf"
+    [IMFellDWPica-Roman.ttf]="https://github.com/google/fonts/raw/main/ofl/imfelldwpica/IMFePIrm28P.ttf"
     [JetBrainsMono-Regular.ttf]="https://github.com/JetBrains/JetBrainsMono/raw/master/fonts/ttf/JetBrainsMono-Regular.ttf"
 )
 
@@ -123,6 +130,33 @@ copy_shared_qml() {
     done
 }
 
+# ---- Restart plasmashell so it drops cached QML and reloads our packages --
+# Without this, kpackagetool6 only writes new files to disk; the running
+# plasmashell keeps its already-compiled QML in memory and our edits never
+# render. This is the single most common reason an "install seemed to work
+# but nothing changed".
+restart_plasmashell() {
+    (( NO_RESTART )) && { say "plasmashell restart skipped (--no-restart)"; return; }
+    say "Refreshing plasmashell"
+    if (( DRY_RUN )); then
+        echo "  would: clear ~/.cache/plasmashell/qmlcache/ and ~/.cache/plasma/plasmoids/"
+        echo "  would: kquitapp6 plasmashell && kstart6 plasmashell"
+        return
+    fi
+    # Clear compiled QML caches first so the process re-reads our QML.
+    rm -rf "$HOME/.cache/plasmashell/qmlcache/" 2>/dev/null || true
+    rm -rf "$HOME/.cache/plasma/plasmoids/" 2>/dev/null || true
+    if command -v kquitapp6 >/dev/null && command -v kstart6 >/dev/null; then
+        kquitapp6 plasmashell >/dev/null 2>&1 || true
+        # kstart6 returns immediately; plasmashell takes ~2s to repaint.
+        kstart6 plasmashell >/dev/null 2>&1 &
+        echo "  · plasmashell restarted (widgets reappear in a couple of seconds)"
+    else
+        warn "kquitapp6/kstart6 not found — log out + back in, or run:"
+        warn "    plasmashell --replace &"
+    fi
+}
+
 # ---- Plasmoids -------------------------------------------------------------
 install_plasmoids() {
     say "Plasmoids"
@@ -157,19 +191,12 @@ Installed. Next steps:
   3. (optional) System Settings → Fonts → General "Caveat",
      Fixed Width "JetBrains Mono".
 
-If you upgraded from an earlier version: existing widgets keep their old
-saved config (which may lack newly-added entries like backgroundOpacity
-or edgeStyle). To pick up new schema fields cleanly:
+This script restarts plasmashell automatically (pass --no-restart to skip)
+so the new QML actually loads. Existing widget instances keep their saved
+config — if a config field added in this release looks blank, right-click
+the widget → Remove, then Add Widgets → re-add a fresh instance.
 
-  • Right-click each Luxury Journal widget → Remove
-  • Right-click desktop → Add Widgets → add a fresh instance
-
-That's the only way Plasma re-reads main.xml for an existing widget.
-
-If a widget still looks stale after upgrade, restart plasmashell:
-    kquitapp6 plasmashell && kstart6 plasmashell
-
-Iterate on a plasmoid without a Plasma restart:
+Iterate on a single plasmoid without a Plasma restart:
     ./dev.sh preview tmuxtail
 EOF
 }
@@ -180,6 +207,7 @@ main() {
     install_color_scheme
     copy_shared_qml
     install_plasmoids
+    restart_plasmashell
     summary
 }
 
