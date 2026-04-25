@@ -4,11 +4,12 @@
 // Palette is accessible unprefixed (same-module singleton).
 import QtQuick
 import QtQuick.Shapes
+import "." as Lib
 
 Item {
     id: root
     property real size: 28
-    property color ink: Palette.inkDark
+    property color ink: Lib.Palette.inkDark
     property int phase: currentPhase()
     implicitWidth: size
     implicitHeight: size
