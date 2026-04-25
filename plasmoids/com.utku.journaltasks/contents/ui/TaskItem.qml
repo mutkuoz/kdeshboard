@@ -34,7 +34,7 @@ Item {
                 text: "✓"
                 color: Shared.Palette.wax
                 font.family: Shared.Palette.fontInitial
-                font.pixelSize: 11
+                font.pixelSize: 14
             }
 
             MouseArea {

@@ -27,7 +27,8 @@ PlasmoidItem {
 
         onNewData: function(sourceName, data) {
             const stdout = (data["stdout"] || "").trim()
-            if (sourceName.indexOf("#LIST") !== -1) {
+            // Route by distinctive substrings of each qdbus command.
+            if (sourceName.indexOf("grep ^org.mpris") !== -1) {
                 const services = stdout.split("\n").filter(s => s.startsWith("org.mpris.MediaPlayer2."))
                 if (preferredPlayer) {
                     const match = services.find(s => s.toLowerCase().endsWith("." + preferredPlayer.toLowerCase()))
@@ -37,12 +38,12 @@ PlasmoidItem {
                 }
                 if (currentPlayer) queryMetadata()
                 else resetEmpty()
-            } else if (sourceName.indexOf("#META") !== -1) {
+            } else if (sourceName.indexOf(".Player.Metadata") !== -1) {
                 parseMetadata(stdout)
-            } else if (sourceName.indexOf("#STATUS") !== -1) {
+            } else if (sourceName.indexOf(".Player.PlaybackStatus") !== -1) {
                 const m = stdout.match(/Playing|Paused|Stopped/)
                 status = m ? m[0] : "Stopped"
-            } else if (sourceName.indexOf("#POSITION") !== -1) {
+            } else if (sourceName.indexOf(".Player.Position") !== -1) {
                 const n = parseInt(stdout, 10)
                 if (!isNaN(n)) position = n
             }
@@ -76,16 +77,15 @@ PlasmoidItem {
     }
 
     function queryList() {
-        // Trailing shell comment tags each query for routing in onNewData while
-        // staying a no-op to /bin/sh. Try qdbus6 first (Plasma 6 default), then qdbus.
-        executable.exec("(qdbus6 2>/dev/null || qdbus 2>/dev/null) | grep ^org.mpris.MediaPlayer2 #LIST")
+        // Try qdbus6 first (Plasma 6 default), then plain qdbus.
+        executable.exec("(qdbus6 2>/dev/null || qdbus 2>/dev/null) | grep ^org.mpris.MediaPlayer2")
     }
     function queryMetadata() {
         if (!currentPlayer) return
         const qd = "(command -v qdbus6 >/dev/null && qdbus6 || qdbus)"
-        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Metadata #META")
-        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus #STATUS")
-        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Position #POSITION")
+        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Metadata")
+        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus")
+        executable.exec(qd + " " + currentPlayer + " /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Position")
     }
     function control(method) {
         if (!currentPlayer) return
@@ -145,7 +145,7 @@ PlasmoidItem {
                 text: root.album
                 color: Shared.Palette.inkMedium
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 12
+                font.pixelSize: 15
                 font.italic: true
                 elide: Text.ElideRight
                 Layout.fillWidth: true

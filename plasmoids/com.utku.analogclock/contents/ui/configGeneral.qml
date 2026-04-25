@@ -22,10 +22,12 @@ Kirigami.FormLayout {
             { text: "Letter stamp",  value: "stamp" },
             { text: "Vintage watch", value: "watch" }
         ]
-        Component.onCompleted: {
+        function refreshIndex() {
             const idx = model.findIndex(m => m.value === selectedValue)
-            currentIndex = idx >= 0 ? idx : 0
+            if (idx >= 0 && currentIndex !== idx) currentIndex = idx
         }
+        Component.onCompleted: refreshIndex()
+        onSelectedValueChanged: refreshIndex()
         onActivated: selectedValue = currentValue
     }
     CheckBox { id: secondsBox; Kirigami.FormData.label: "Show seconds hand:" }

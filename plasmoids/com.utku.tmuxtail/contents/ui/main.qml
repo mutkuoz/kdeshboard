@@ -127,7 +127,7 @@ PlasmoidItem {
                     id: logView
                     text: root.paneContent
                     font.family: Shared.Palette.fontMono
-                    font.pixelSize: 11
+                    font.pixelSize: 14
                     color: Shared.Palette.inkDark
                     readOnly: true
                     wrapMode: TextArea.NoWrap
