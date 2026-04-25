@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
-import org.kde.plasma.plasma5support as P5Support
 import org.kde.kirigami as Kirigami
 import "shared" as Shared
 
@@ -17,7 +16,7 @@ PlasmoidItem {
     property real   lat: 0
     property real   lon: 0
     property bool   havePosition: false
-    property string line1: ""
+    property string line1: "— consulting the almanac… —"
     property string line2: ""
     property string line3: ""
     property bool   silent: false
@@ -67,33 +66,63 @@ PlasmoidItem {
 
     function unitSuffix() { return units === "imperial" ? "°F" : "°C" }
 
-    P5Support.DataSource {
-        id: executable
-        engine: "executable"
-        connectedSources: []
+    function setSilent(why) {
+        silent = true
+        line1 = "— the almanac is silent" + (why ? ": " + why + " —" : ". —")
+        line2 = ""
+        line3 = ""
+    }
 
-        onNewData: function(sourceName, data) {
-            const stdout = data["stdout"] || ""
-            const exit = data["exit code"]
-            // Route by URL substring — both endpoints have unique paths so
-            // we don't need to embed routing markers in the command.
-            if (sourceName.indexOf("geocoding-api") !== -1) {
+    // Pure-QML HTTP. The executable engine path was unreliable across Plasma
+    // 6 builds; XHR is built into QML's JS runtime and Just Works.
+    function getJson(url, onOk, onErr) {
+        const xhr = new XMLHttpRequest()
+        xhr.timeout = 10000
+        xhr.open("GET", url)
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== XMLHttpRequest.DONE) return
+            if (xhr.status === 200) {
+                try { onOk(JSON.parse(xhr.responseText)) }
+                catch (e) { onErr("bad JSON: " + e) }
+            } else {
+                onErr("HTTP " + xhr.status)
+            }
+        }
+        xhr.ontimeout = function() { onErr("timeout") }
+        xhr.send()
+    }
+
+    function fetchGeocode() {
+        const url = "https://geocoding-api.open-meteo.com/v1/search?count=1&name="
+                    + encodeURIComponent(cityName)
+        getJson(url,
+            function(json) {
+                if (json.results && json.results.length > 0) {
+                    root.lat = json.results[0].latitude
+                    root.lon = json.results[0].longitude
+                    root.havePosition = true
+                    fetchForecast()
+                } else {
+                    setSilent("city '" + cityName + "' not found")
+                }
+            },
+            function(err) {
+                console.warn("weather: geocode failed:", err)
+                setSilent(err)
+            })
+    }
+
+    function fetchForecast() {
+        if (!havePosition) return
+        const u = units === "imperial" ? "&temperature_unit=fahrenheit&wind_speed_unit=mph" : ""
+        const url = "https://api.open-meteo.com/v1/forecast"
+                  + "?latitude=" + lat + "&longitude=" + lon
+                  + "&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m"
+                  + "&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max"
+                  + "&timezone=auto&forecast_days=3" + u
+        getJson(url,
+            function(json) {
                 try {
-                    const body = stdout.slice(stdout.indexOf("{"))
-                    const json = JSON.parse(body)
-                    if (json.results && json.results.length > 0) {
-                        root.lat = json.results[0].latitude
-                        root.lon = json.results[0].longitude
-                        root.havePosition = true
-                        fetchForecast()
-                    } else {
-                        setSilent()
-                    }
-                } catch (e) { console.warn("geocoding parse:", e); setSilent() }
-            } else if (sourceName.indexOf("api.open-meteo.com/v1/forecast") !== -1) {
-                try {
-                    const body = stdout.slice(stdout.indexOf("{"))
-                    const json = JSON.parse(body)
                     const cur = json.current
                     const daily = json.daily
                     const tempUnit = unitSuffix()
@@ -116,38 +145,16 @@ PlasmoidItem {
                     root.line3 = dayNames[dayAfter.getDay()] + " — " + weatherProse(dCode)
                                + ", high " + dHi + tempUnit + ", " + precipProse(dPrecip) + "."
                     root.silent = false
-                } catch (e) { console.warn("forecast parse:", e); setSilent() }
-            }
-            disconnectSource(sourceName)
-        }
-        function exec(cmd) { if (cmd) connectSource(cmd) }
+                } catch (e) {
+                    console.warn("weather: forecast parse failed:", e)
+                    setSilent("malformed forecast")
+                }
+            },
+            function(err) {
+                console.warn("weather: forecast failed:", err)
+                setSilent(err)
+            })
     }
-
-    function setSilent() {
-        silent = true
-        line1 = "— the almanac is silent. —"
-        line2 = ""
-        line3 = ""
-    }
-
-    function fetchGeocode() {
-        const url = "https://geocoding-api.open-meteo.com/v1/search?count=1&name="
-                    + encodeURIComponent(cityName)
-        executable.exec("curl -sS --max-time 10 " + shellQuote(url))
-    }
-
-    function fetchForecast() {
-        if (!havePosition) return
-        const u = units === "imperial" ? "&temperature_unit=fahrenheit&wind_speed_unit=mph" : ""
-        const url = "https://api.open-meteo.com/v1/forecast"
-                  + "?latitude=" + lat + "&longitude=" + lon
-                  + "&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m"
-                  + "&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max"
-                  + "&timezone=auto&forecast_days=3" + u
-        executable.exec("curl -sS --max-time 10 " + shellQuote(url))
-    }
-
-    function shellQuote(s) { return "'" + s.replace(/'/g, "'\\''") + "'" }
 
     Timer {
         interval: 60 * 1000
@@ -168,7 +175,10 @@ PlasmoidItem {
 
     onCityNameChanged: {
         havePosition = false
-        line1 = line2 = line3 = ""
+        line1 = "— consulting the almanac… —"
+        line2 = ""
+        line3 = ""
+        silent = false
         fetchGeocode()
     }
 
@@ -180,8 +190,8 @@ PlasmoidItem {
 
         Shared.ParchmentBackground {
             anchors.fill: parent
-            alpha:     Plasmoid.configuration.backgroundOpacity
-            edgeStyle: Plasmoid.configuration.edgeStyle
+            alpha:     Plasmoid.configuration.backgroundOpacity > 0 ? Plasmoid.configuration.backgroundOpacity : 1.0
+            edgeStyle: Plasmoid.configuration.edgeStyle || "rounded"
         }
         Loader { sourceComponent: Shared.Ornaments.PageCorner; anchors.top: parent.top; anchors.right: parent.right }
 

@@ -4,9 +4,14 @@
 //                  "stamped" (postage-stamp perforations), "embossed" (gilt frame)
 //   - showFoxing:  three dim "age spots"
 //   - showGrain:   faint SVG turbulence noise overlay
+//
+// Visibility rule: the simple Rectangle is the default and is shown for ANY
+// edgeStyle that isn't one of the explicit shape modes ("ripped", "deckle").
+// This makes the widget render correctly when the cfg alias is briefly an
+// empty string during config load, or holds an unrecognised value.
+//
 // Palette is accessible unprefixed (same-module singleton).
 import QtQuick
-import QtQuick.Shapes
 
 Item {
     id: root
@@ -17,14 +22,14 @@ Item {
     property real alpha: 1.0                      // 0..1; applied to base fill
     property string edgeStyle: "rounded"          // "rounded" | "ripped" | "deckle" | "stamped" | "embossed"
 
-    // Expose parchment color with alpha so children can match.
+    readonly property bool useShapedFill: edgeStyle === "ripped" || edgeStyle === "deckle"
     readonly property color resolvedColor: Qt.rgba(
         Palette.parchment.r, Palette.parchment.g, Palette.parchment.b, root.alpha)
 
-    // --- Base fill for simple styles -----------------------------------------
+    // --- Default base fill — always shown unless a shaped mode is active ----
     Rectangle {
         id: basePlain
-        visible: root.edgeStyle === "rounded" || root.edgeStyle === "embossed" || root.edgeStyle === "stamped"
+        visible: !root.useShapedFill
         anchors.fill: parent
         radius: root.cornerRadius
         antialiasing: true
@@ -36,7 +41,7 @@ Item {
     // --- Ripped/deckle fill via Canvas --------------------------------------
     Canvas {
         id: shapedFill
-        visible: root.edgeStyle === "ripped" || root.edgeStyle === "deckle"
+        visible: root.useShapedFill
         anchors.fill: parent
         antialiasing: true
         onPaint: {

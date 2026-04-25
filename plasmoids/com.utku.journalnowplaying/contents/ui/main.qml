@@ -112,8 +112,8 @@ PlasmoidItem {
 
         Shared.ParchmentBackground {
             anchors.fill: parent
-            alpha:     Plasmoid.configuration.backgroundOpacity
-            edgeStyle: Plasmoid.configuration.edgeStyle
+            alpha:     Plasmoid.configuration.backgroundOpacity > 0 ? Plasmoid.configuration.backgroundOpacity : 1.0
+            edgeStyle: Plasmoid.configuration.edgeStyle || "rounded"
         }
         Loader { sourceComponent: Shared.Ornaments.PageCorner; anchors.top: parent.top; anchors.right: parent.right }
 
