@@ -150,10 +150,24 @@ Installed. Next steps:
   1. System Settings → Colors & Themes → Colors → pick "Luxury Journal".
   2. Right-click desktop → Add or Manage Widgets, add any of:
        Luxury Greeting · Tmux Tail · Journal Tasks ·
-       Journal Clock · Journal Weather · Journal NowPlaying.
+       Journal Clock · Journal Weather · Journal NowPlaying ·
+       System Info · Analog Clock · Almanac ·
+       Commonplace Book · Hourglass.
      Configure each via the wrench icon.
   3. (optional) System Settings → Fonts → General "Caveat",
      Fixed Width "JetBrains Mono".
+
+If you upgraded from an earlier version: existing widgets keep their old
+saved config (which may lack newly-added entries like backgroundOpacity
+or edgeStyle). To pick up new schema fields cleanly:
+
+  • Right-click each Luxury Journal widget → Remove
+  • Right-click desktop → Add Widgets → add a fresh instance
+
+That's the only way Plasma re-reads main.xml for an existing widget.
+
+If a widget still looks stale after upgrade, restart plasmashell:
+    kquitapp6 plasmashell && kstart6 plasmashell
 
 Iterate on a plasmoid without a Plasma restart:
     ./dev.sh preview tmuxtail
