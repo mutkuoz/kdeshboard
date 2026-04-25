@@ -10,8 +10,13 @@
 // This makes the widget render correctly when the cfg alias is briefly an
 // empty string during config load, or holds an unrecognised value.
 //
-// Palette is accessible unprefixed (same-module singleton).
+// Important: the Palette singleton is declared in this directory's qmldir,
+// but qmldir-declared singletons aren't automatically in scope for sibling
+// files — we need an explicit local import. Without this, Lib.Palette.X
+// silently resolves to undefined and Qt logs "Unable to assign [undefined]
+// to QColor" for every color binding.
 import QtQuick
+import "." as Lib
 
 Item {
     id: root
@@ -24,7 +29,7 @@ Item {
 
     readonly property bool useShapedFill: edgeStyle === "ripped" || edgeStyle === "deckle"
     readonly property color resolvedColor: Qt.rgba(
-        Palette.parchment.r, Palette.parchment.g, Palette.parchment.b, root.alpha)
+        Lib.Palette.parchment.r, Lib.Palette.parchment.g, Lib.Palette.parchment.b, root.alpha)
 
     // --- Default base fill — always shown unless a shaped mode is active ----
     Rectangle {
@@ -35,7 +40,7 @@ Item {
         antialiasing: true
         color: root.resolvedColor
         border.width: root.edgeStyle === "embossed" ? 1.5 : 0
-        border.color: Palette.gilt
+        border.color: Lib.Palette.gilt
     }
 
     // --- Ripped/deckle fill via Canvas --------------------------------------
@@ -48,7 +53,7 @@ Item {
             const ctx = getContext("2d")
             ctx.reset()
             ctx.fillStyle = root.resolvedColor
-            ctx.strokeStyle = Palette.paperShadow
+            ctx.strokeStyle = Lib.Palette.paperShadow
             ctx.lineWidth = 0.5
             ctx.beginPath()
             ctx.moveTo(0, 0)
@@ -120,7 +125,7 @@ Item {
             model: stamped.hCount
             Rectangle {
                 width: 4; height: 4; radius: 2
-                color: Palette.parchment
+                color: Lib.Palette.parchment
                 x: (index / stamped.hCount) * root.width - 2
                 y: -2
             }
@@ -129,7 +134,7 @@ Item {
             model: stamped.hCount
             Rectangle {
                 width: 4; height: 4; radius: 2
-                color: Palette.parchment
+                color: Lib.Palette.parchment
                 x: (index / stamped.hCount) * root.width - 2
                 y: root.height - 2
             }
@@ -138,7 +143,7 @@ Item {
             model: stamped.vCount
             Rectangle {
                 width: 4; height: 4; radius: 2
-                color: Palette.parchment
+                color: Lib.Palette.parchment
                 y: (index / stamped.vCount) * root.height - 2
                 x: -2
             }
@@ -147,7 +152,7 @@ Item {
             model: stamped.vCount
             Rectangle {
                 width: 4; height: 4; radius: 2
-                color: Palette.parchment
+                color: Lib.Palette.parchment
                 y: (index / stamped.vCount) * root.height - 2
                 x: root.width - 2
             }
@@ -181,7 +186,7 @@ Item {
             width: spotSize
             height: spotSize
             radius: spotSize / 2
-            color: Palette.foxing
+            color: Lib.Palette.foxing
             opacity: 0.10 * root.alpha
             x: (index === 0 ? 0.12 : index === 1 ? 0.78 : 0.55) * root.width
             y: (index === 0 ? 0.82 : index === 1 ? 0.22 : 0.48) * root.height

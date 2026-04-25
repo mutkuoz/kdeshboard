@@ -140,21 +140,28 @@ restart_plasmashell() {
     say "Refreshing plasmashell"
     if (( DRY_RUN )); then
         echo "  would: clear ~/.cache/plasmashell/qmlcache/ and ~/.cache/plasma/plasmoids/"
-        echo "  would: kquitapp6 plasmashell && kstart6 plasmashell"
+        echo "  would: restart plasmashell"
         return
     fi
     # Clear compiled QML caches first so the process re-reads our QML.
     rm -rf "$HOME/.cache/plasmashell/qmlcache/" 2>/dev/null || true
     rm -rf "$HOME/.cache/plasma/plasmoids/" 2>/dev/null || true
+    rm -rf "$HOME/.cache/QtProject.org/qmlcache/" 2>/dev/null || true
+
+    # Try the preferred sequence first; fall back to plasmashell --replace
+    # which is guaranteed to exist anywhere plasmashell does.
     if command -v kquitapp6 >/dev/null && command -v kstart6 >/dev/null; then
         kquitapp6 plasmashell >/dev/null 2>&1 || true
-        # kstart6 returns immediately; plasmashell takes ~2s to repaint.
         kstart6 plasmashell >/dev/null 2>&1 &
-        echo "  · plasmashell restarted (widgets reappear in a couple of seconds)"
+    elif command -v plasmashell >/dev/null; then
+        # `--replace` daemonises; redirect stdio so we don't block the script.
+        nohup plasmashell --replace >/dev/null 2>&1 &
+        disown 2>/dev/null || true
     else
-        warn "kquitapp6/kstart6 not found — log out + back in, or run:"
-        warn "    plasmashell --replace &"
+        warn "plasmashell not in PATH — log out + back in to refresh"
+        return
     fi
+    echo "  · plasmashell restarted (widgets reappear in a couple of seconds)"
 }
 
 # ---- Plasmoids -------------------------------------------------------------
