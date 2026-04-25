@@ -145,7 +145,7 @@ PlasmoidItem {
                 text: "ALMANAC"
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 11
+                font.pixelSize: 14
                 font.letterSpacing: 2.0
             }
             Loader { sourceComponent: Shared.Ornaments.DoubleRule; Layout.fillWidth: true }
@@ -163,7 +163,7 @@ PlasmoidItem {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
-                Text { text: "❦"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 12 }
+                Text { text: "❦"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 }
                 Text {
                     text: root.seasonLine
                     color: Shared.Palette.inkMedium
@@ -174,7 +174,7 @@ PlasmoidItem {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
-                Text { text: "☾"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 12 }
+                Text { text: "☾"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 }
                 Text {
                     text: root.moonLine
                     color: Shared.Palette.inkMedium
@@ -185,7 +185,7 @@ PlasmoidItem {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
-                Text { text: "§"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 12 }
+                Text { text: "§"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 }
                 Text {
                     text: root.dayCount
                     color: Shared.Palette.inkMedium

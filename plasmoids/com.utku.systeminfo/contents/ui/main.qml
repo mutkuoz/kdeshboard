@@ -36,9 +36,8 @@ PlasmoidItem {
 
         onNewData: function(sourceName, data) {
             const stdout = data["stdout"] || ""
-            if (sourceName.indexOf("#SYSINFO") !== -1) {
-                parseReport(stdout)
-            }
+            // Only one command, only one possible reply.
+            parseReport(stdout)
             disconnectSource(sourceName)
         }
         function exec(cmd) { if (cmd) connectSource(cmd) }
@@ -104,7 +103,7 @@ PlasmoidItem {
             'echo "DISK=${disk:--1}"; echo "GPU=$gpu"; echo "GPU_TEMP=$gtemp"; ' +
             'echo "BAT=${bat:--1}"; echo "BAT_STATE=${bs:-unknown}"; ' +
             'echo "NET_RX=$rxkbs"; echo "NET_TX=$txkbs"; echo "PING=$p"' +
-            '\' #SYSINFO'
+            '\''
     }
 
     Timer {
@@ -137,7 +136,7 @@ PlasmoidItem {
                 text: "INSTRUMENTATION"
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 11
+                font.pixelSize: 14
                 font.letterSpacing: 2.0
                 Layout.leftMargin: 6
             }
@@ -215,7 +214,7 @@ PlasmoidItem {
                             Layout.alignment: Qt.AlignHCenter
                             color: Shared.Palette.inkMedium
                             font.family: Shared.Palette.fontSmallCaps
-                            font.pixelSize: 9
+                            font.pixelSize: 12
                             font.letterSpacing: 1.2
                         }
                     }

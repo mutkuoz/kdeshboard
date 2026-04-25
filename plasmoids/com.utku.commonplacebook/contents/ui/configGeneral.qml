@@ -27,14 +27,19 @@ Kirigami.FormLayout {
     }
     RowLayout {
         Kirigami.FormData.label: "Background opacity:"
+        Layout.preferredWidth: 280
         Slider {
             id: opacitySlider
             from: 0.10
             to: 1.00
             stepSize: 0.05
             Layout.fillWidth: true
+            Layout.preferredWidth: 200
         }
-        Label { text: Math.round(opacitySlider.value * 100) + "%" }
+        Label {
+            text: Math.round(opacitySlider.value * 100) + "%"
+            Layout.preferredWidth: 36
+        }
     }
     ComboBox {
         id: edgeCombo
@@ -49,10 +54,12 @@ Kirigami.FormLayout {
             { text: "Stamped",  value: "stamped"  },
             { text: "Embossed", value: "embossed" }
         ]
-        Component.onCompleted: {
+        function refreshIndex() {
             const idx = model.findIndex(m => m.value === selectedValue)
-            currentIndex = idx >= 0 ? idx : 0
+            if (idx >= 0 && currentIndex !== idx) currentIndex = idx
         }
+        Component.onCompleted: refreshIndex()
+        onSelectedValueChanged: refreshIndex()
         onActivated: selectedValue = currentValue
     }
     Label {

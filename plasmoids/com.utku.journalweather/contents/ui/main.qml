@@ -75,7 +75,9 @@ PlasmoidItem {
         onNewData: function(sourceName, data) {
             const stdout = data["stdout"] || ""
             const exit = data["exit code"]
-            if (sourceName.indexOf("#GEOCODE") !== -1) {
+            // Route by URL substring — both endpoints have unique paths so
+            // we don't need to embed routing markers in the command.
+            if (sourceName.indexOf("geocoding-api") !== -1) {
                 try {
                     const body = stdout.slice(stdout.indexOf("{"))
                     const json = JSON.parse(body)
@@ -88,7 +90,7 @@ PlasmoidItem {
                         setSilent()
                     }
                 } catch (e) { console.warn("geocoding parse:", e); setSilent() }
-            } else if (sourceName.indexOf("#FORECAST") !== -1) {
+            } else if (sourceName.indexOf("api.open-meteo.com/v1/forecast") !== -1) {
                 try {
                     const body = stdout.slice(stdout.indexOf("{"))
                     const json = JSON.parse(body)
@@ -131,8 +133,7 @@ PlasmoidItem {
     function fetchGeocode() {
         const url = "https://geocoding-api.open-meteo.com/v1/search?count=1&name="
                     + encodeURIComponent(cityName)
-        // Trailing shell comment keeps the marker in sourceName while being a no-op to the shell.
-        executable.exec("curl -sS --max-time 10 " + shellQuote(url) + " #GEOCODE")
+        executable.exec("curl -sS --max-time 10 " + shellQuote(url))
     }
 
     function fetchForecast() {
@@ -143,7 +144,7 @@ PlasmoidItem {
                   + "&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m"
                   + "&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max"
                   + "&timezone=auto&forecast_days=3" + u
-        executable.exec("curl -sS --max-time 10 " + shellQuote(url) + " #FORECAST")
+        executable.exec("curl -sS --max-time 10 " + shellQuote(url))
     }
 
     function shellQuote(s) { return "'" + s.replace(/'/g, "'\\''") + "'" }
@@ -193,7 +194,7 @@ PlasmoidItem {
                 text: root.cityName
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 12
+                font.pixelSize: 15
                 font.letterSpacing: 1.6
             }
             Loader { sourceComponent: Shared.Ornaments.DoubleRule; Layout.fillWidth: true; Layout.topMargin: 2 }

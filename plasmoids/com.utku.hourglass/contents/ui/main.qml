@@ -114,7 +114,7 @@ PlasmoidItem {
                 text: "HOURGLASS"
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 11
+                font.pixelSize: 14
                 font.letterSpacing: 2.0
                 Layout.alignment: Qt.AlignHCenter
             }

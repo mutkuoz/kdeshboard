@@ -84,7 +84,7 @@ Item {
         text: (root.unit ? root.unit + " · " : "") + root.label
         color: Shared.Palette.inkMedium
         font.family: Shared.Palette.fontSmallCaps
-        font.pixelSize: 9
+        font.pixelSize: 12
         font.letterSpacing: 1.2
     }
 }

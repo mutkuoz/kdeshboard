@@ -196,7 +196,7 @@ PlasmoidItem {
                     text: root.stampLabel
                     color: Shared.Palette.burgundy
                     font.family: Shared.Palette.fontSmallCaps
-                    font.pixelSize: 9
+                    font.pixelSize: 12
                     font.letterSpacing: 1.6
                 }
 
@@ -336,11 +336,11 @@ PlasmoidItem {
                         ctx.fillStyle = Shared.Palette.inkDark
                         ctx.textAlign    = "center"
                         ctx.textBaseline = "middle"
-                        ctx.font = "600 " + Math.max(7, r * 0.09) + "px 'Cormorant SC'"
+                        ctx.font = "600 " + Math.max(11, r * 0.11) + "px 'Cormorant SC'"
                         if (root.watchBrand) ctx.fillText(root.watchBrand, cx, cy - r * 0.42)
-                        ctx.font = "italic " + Math.max(6, r * 0.07) + "px 'Cormorant Garamond'"
+                        ctx.font = "italic " + Math.max(9, r * 0.09) + "px 'Cormorant Garamond'"
                         ctx.fillStyle = Shared.Palette.burgundy
-                        if (root.watchSubtitle) ctx.fillText(root.watchSubtitle, cx, cy - r * 0.29)
+                        if (root.watchSubtitle) ctx.fillText(root.watchSubtitle, cx, cy - r * 0.27)
 
                         // Moon-phase complication — circular aperture at ~6 o'clock.
                         const mcx = cx
@@ -515,8 +515,8 @@ PlasmoidItem {
                 ctx.fillStyle = face.numeralColor
                 ctx.textAlign    = "center"
                 ctx.textBaseline = "middle"
-                const fontSize = Math.max(9, r * 0.16)
-                ctx.font = fontSize + "px 'Cormorant Garamond'"
+                const fontSize = Math.max(12, r * 0.18)
+                ctx.font = "600 " + fontSize + "px 'Cormorant Garamond'"
                 const labels = face.useRomanNumerals ? root.romans : root.arabic
                 for (let i = 0; i < 12; i++) {
                     const a = i * Math.PI / 6

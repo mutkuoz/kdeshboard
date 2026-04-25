@@ -53,10 +53,10 @@ PlasmoidItem {
 
         onNewData: function(sourceName, data) {
             const stdout = data["stdout"] || ""
-            if (sourceName.indexOf("#HOME") !== -1) {
+            if (sourceName.indexOf("echo $HOME") !== -1) {
                 homeDir = stdout.replace(/\n$/, "")
                 if (root.quotesFile) refreshFile()
-            } else if (sourceName.indexOf("#QUOTES") !== -1) {
+            } else if (sourceName.indexOf("cat ") === 0) {
                 parseQuotesText(stdout)
             }
             disconnectSource(sourceName)
@@ -89,7 +89,7 @@ PlasmoidItem {
     function refreshFile() {
         if (!quotesFile || !executable.homeDir) return
         const p = expandPath(quotesFile).replace(/'/g, "'\\''")
-        executable.exec("cat '" + p + "' 2>/dev/null #QUOTES")
+        executable.exec("cat '" + p + "' 2>/dev/null")
     }
 
     function cycle() {
@@ -113,7 +113,7 @@ PlasmoidItem {
         const doy = Math.floor((d - start) / 86400000)
         index = doy % builtinPool.length
         // Kick off file read if configured.
-        if (quotesFile) executable.exec("echo $HOME #HOME")
+        if (quotesFile) executable.exec("echo $HOME")
     }
 
     onQuotesFileChanged: {
@@ -121,7 +121,7 @@ PlasmoidItem {
             pool = builtinPool
             index = 0
         } else if (!executable.homeDir) {
-            executable.exec("echo $HOME #HOME")
+            executable.exec("echo $HOME")
         } else {
             refreshFile()
         }
@@ -152,7 +152,7 @@ PlasmoidItem {
                     text: "COMMONPLACE"
                     color: Shared.Palette.burgundy
                     font.family: Shared.Palette.fontSmallCaps
-                    font.pixelSize: 11
+                    font.pixelSize: 14
                     font.letterSpacing: 2.0
                 }
                 Item { Layout.fillWidth: true }
@@ -160,7 +160,7 @@ PlasmoidItem {
                     text: pool.length > 0 ? (index + 1) + "/" + pool.length : ""
                     color: Shared.Palette.inkMedium
                     font.family: Shared.Palette.fontSmallCaps
-                    font.pixelSize: 9
+                    font.pixelSize: 12
                     font.letterSpacing: 1.2
                 }
             }
