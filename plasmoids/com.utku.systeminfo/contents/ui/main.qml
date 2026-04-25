@@ -8,6 +8,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property int    refreshMs:          Plasmoid.configuration.refreshMs
@@ -136,7 +138,7 @@ PlasmoidItem {
                 text: "INSTRUMENTATION"
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 14
+                font.pixelSize: 1 * root.ts4 * root.ts
                 font.letterSpacing: 2.0
                 Layout.leftMargin: 6
             }
@@ -150,26 +152,30 @@ PlasmoidItem {
                 Layout.fillHeight: true
                 Layout.alignment: Qt.AlignCenter
 
-                Gauge { value: root.cpuPct;  maxValue: 100;  unit: "%";  label: "cpu";       ringColor: Shared.Palette.burgundy }
-                Gauge { value: root.cpuTemp; maxValue: 100;  unit: "°C"; label: "cpu temp";  ringColor: Shared.Palette.wax; warnThreshold: 75 }
-                Gauge { value: root.memPct;  maxValue: 100;  unit: "%";  label: "memory";    ringColor: Shared.Palette.burgundy }
+                Gauge { ts: root.ts; value: root.cpuPct;  maxValue: 100;  unit: "%";  label: "cpu";       ringColor: Shared.Palette.burgundy }
+                Gauge { ts: root.ts; value: root.cpuTemp; maxValue: 100;  unit: "°C"; label: "cpu temp";  ringColor: Shared.Palette.wax; warnThreshold: 75 }
+                Gauge { ts: root.ts; value: root.memPct;  maxValue: 100;  unit: "%";  label: "memory";    ringColor: Shared.Palette.burgundy }
 
                 Gauge {
+                    ts: root.ts
                     value: root.showGpu ? root.gpuPct : -1
                     maxValue: 100; unit: "%"; label: "gpu"
                     ringColor: Shared.Palette.burgundy
                 }
                 Gauge {
+                    ts: root.ts
                     value: root.showGpu ? root.gpuTemp : -1
                     maxValue: 100; unit: "°C"; label: "gpu temp"
                     ringColor: Shared.Palette.wax; warnThreshold: 80
                 }
                 Gauge {
+                    ts: root.ts
                     value: root.diskPct; maxValue: 100; unit: "%"; label: "disk"
                     ringColor: Shared.Palette.burgundy; warnThreshold: 85
                 }
 
                 Gauge {
+                    ts: root.ts
                     value: root.batPct; maxValue: 100; unit: "%"
                     label: root.batState ? root.batState.toLowerCase() : "battery"
                     ringColor: root.batState === "Charging" ? Shared.Palette.burgundy : Shared.Palette.wax
@@ -188,24 +194,24 @@ PlasmoidItem {
                             Layout.alignment: Qt.AlignHCenter
                             Layout.topMargin: 10
                             spacing: 2
-                            Text { text: "↓"; color: Shared.Palette.burgundy; font.family: Shared.Palette.fontSerif; font.pixelSize: 14 }
+                            Text { text: "↓"; color: Shared.Palette.burgundy; font.family: Shared.Palette.fontSerif; font.pixelSize: 14 * root.ts }
                             Text {
                                 text: root.netRxKBs >= 0 ? formatKB(root.netRxKBs) : "—"
                                 color: Shared.Palette.inkDark
                                 font.family: Shared.Palette.fontSerif
-                                font.pixelSize: 14
+                                font.pixelSize: 1 * root.ts4 * root.ts
                                 font.weight: Font.DemiBold
                             }
                         }
                         RowLayout {
                             Layout.alignment: Qt.AlignHCenter
                             spacing: 2
-                            Text { text: "↑"; color: Shared.Palette.wax; font.family: Shared.Palette.fontSerif; font.pixelSize: 14 }
+                            Text { text: "↑"; color: Shared.Palette.wax; font.family: Shared.Palette.fontSerif; font.pixelSize: 14 * root.ts }
                             Text {
                                 text: root.netTxKBs >= 0 ? formatKB(root.netTxKBs) : "—"
                                 color: Shared.Palette.inkDark
                                 font.family: Shared.Palette.fontSerif
-                                font.pixelSize: 14
+                                font.pixelSize: 1 * root.ts4 * root.ts
                                 font.weight: Font.DemiBold
                             }
                         }
@@ -214,13 +220,14 @@ PlasmoidItem {
                             Layout.alignment: Qt.AlignHCenter
                             color: Shared.Palette.inkMedium
                             font.family: Shared.Palette.fontSmallCaps
-                            font.pixelSize: 12
+                            font.pixelSize: 1 * root.ts2 * root.ts
                             font.letterSpacing: 1.2
                         }
                     }
                 }
 
                 Gauge {
+                    ts: root.ts
                     value: root.showPing ? root.pingMs : -1
                     maxValue: 200; unit: "ms"; label: "ping"
                     ringColor: Shared.Palette.wax; warnThreshold: 60

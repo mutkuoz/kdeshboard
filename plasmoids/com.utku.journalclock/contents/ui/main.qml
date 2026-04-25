@@ -7,6 +7,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property bool use24h:      Plasmoid.configuration.use24h
@@ -80,7 +82,7 @@ PlasmoidItem {
                 text: root.currentTime
                 color: Shared.Palette.inkDark
                 font.family: Shared.Palette.fontSerif
-                font.pixelSize: 56
+                font.pixelSize: 56 * root.ts
                 font.weight: Font.DemiBold
                 verticalAlignment: Text.AlignVCenter
             }
@@ -90,7 +92,7 @@ PlasmoidItem {
                 text: root.currentSeconds
                 color: Shared.Palette.inkMedium
                 font.family: Shared.Palette.fontSerif
-                font.pixelSize: 22
+                font.pixelSize: 22 * root.ts
                 verticalAlignment: Text.AlignBottom
                 topPadding: 18
             }
@@ -103,7 +105,7 @@ PlasmoidItem {
                     text: root.dayName
                     color: Shared.Palette.inkMedium
                     font.family: Shared.Palette.fontAccent
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                 }
                 Text {
                     text: root.dateOrdinalHtml
@@ -111,7 +113,7 @@ PlasmoidItem {
                     color: Shared.Palette.inkDark
                     font.family: Shared.Palette.fontSerif
                     font.italic: true
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                 }
             }
         }

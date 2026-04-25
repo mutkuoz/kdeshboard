@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [{ "Name": "Utku" }],
+    "Category": "Utilities",
+    "Description": "Quick Access — a configurable launcher panel of icon tiles",
+    "Icon": "applications-utilities",
+    "Id": "com.utku.quickaccess",
+    "License": "MIT",
+    "Name": "Quick Access",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

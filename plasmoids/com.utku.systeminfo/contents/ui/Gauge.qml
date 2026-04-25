@@ -13,6 +13,7 @@ Item {
     property int     warnThreshold: 80  // shifts ring to wax when exceeded
     property color   warnColor: Shared.Palette.wax
     property bool    invertWarning: false
+    property real    ts: 1.0             // text scale, fed from main.qml
 
     implicitWidth: 78
     implicitHeight: 82
@@ -73,7 +74,7 @@ Item {
               : "—"
         color: root.warned ? Shared.Palette.wax : Shared.Palette.inkDark
         font.family: Shared.Palette.fontSerif
-        font.pixelSize: 15
+        font.pixelSize: 15 * root.ts
         font.weight: Font.DemiBold
     }
 
@@ -84,7 +85,7 @@ Item {
         text: (root.unit ? root.unit + " · " : "") + root.label
         color: Shared.Palette.inkMedium
         font.family: Shared.Palette.fontSmallCaps
-        font.pixelSize: 12
+        font.pixelSize: 12 * root.ts
         font.letterSpacing: 1.2
     }
 }

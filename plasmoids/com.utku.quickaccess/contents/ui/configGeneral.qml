@@ -4,26 +4,56 @@ import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 
 Kirigami.FormLayout {
-    property alias cfg_use24h:            use24hBox.checked
-    property alias cfg_showSeconds:       secondsBox.checked
-    property alias cfg_locale:            localeField.text
+    property alias cfg_itemsText:         itemsArea.text
+    property alias cfg_iconSize:          iconSizeSpin.value
+    property alias cfg_columns:           columnsSpin.value
+    property alias cfg_showLabels:        labelsBox.checked
     property alias cfg_backgroundOpacity: opacitySlider.value
     property alias cfg_textScale:         textScaleSlider.value
     property alias cfg_edgeStyle:         edgeCombo.selectedValue
 
-    CheckBox {
-        id: use24hBox
-        Kirigami.FormData.label: "24-hour clock:"
+    SpinBox {
+        id: iconSizeSpin
+        Kirigami.FormData.label: "Icon size:"
+        from: 16
+        to: 96
+        stepSize: 4
+    }
+    SpinBox {
+        id: columnsSpin
+        Kirigami.FormData.label: "Columns:"
+        from: 1
+        to: 8
     }
     CheckBox {
-        id: secondsBox
-        Kirigami.FormData.label: "Show seconds:"
+        id: labelsBox
+        Kirigami.FormData.label: "Show labels:"
     }
-    TextField {
-        id: localeField
-        Kirigami.FormData.label: "Locale (empty = system):"
-        placeholderText: "e.g. en-GB, tr-TR"
+
+    Label {
+        text: "Items (one per line, pipe-separated):  label | icon | command"
+        Layout.fillWidth: true
     }
+    Label {
+        text: "Icon names follow the freedesktop spec (e.g. utilities-terminal).\n" +
+              "Run  kdialog --geticon  or browse  /usr/share/icons/  to find names."
+        color: Kirigami.Theme.disabledTextColor
+        wrapMode: Text.WordWrap
+        font.pixelSize: 11
+        Layout.fillWidth: true
+    }
+    ScrollView {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 200
+        Layout.preferredWidth: 460
+        TextArea {
+            id: itemsArea
+            wrapMode: TextArea.NoWrap
+            font.family: "monospace"
+            placeholderText: "Files|system-file-manager|dolphin"
+        }
+    }
+
     RowLayout {
         Kirigami.FormData.label: "Text size:"
         Layout.preferredWidth: 280
@@ -40,7 +70,6 @@ Kirigami.FormLayout {
             Layout.preferredWidth: 36
         }
     }
-
     RowLayout {
         Kirigami.FormData.label: "Background opacity:"
         Layout.preferredWidth: 280

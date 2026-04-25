@@ -7,6 +7,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property string mode:             Plasmoid.configuration.mode        // "seal" | "stamp" | "watch"
@@ -196,7 +198,7 @@ PlasmoidItem {
                     text: root.stampLabel
                     color: Shared.Palette.burgundy
                     font.family: Shared.Palette.fontSmallCaps
-                    font.pixelSize: 12
+                    font.pixelSize: 12 * root.ts
                     font.letterSpacing: 1.6
                 }
 

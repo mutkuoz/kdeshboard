@@ -6,12 +6,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
-- Five new plasmoids:
+- Six new plasmoids:
   - `com.utku.systeminfo` — 3×3 gauge grid for CPU/GPU/mem/disk/net/ping/battery.
-  - `com.utku.analogclock` — analog clock in a wax-seal or postage-stamp housing.
+  - `com.utku.analogclock` — analog clock in a wax-seal, postage-stamp, or vintage-watch housing (the watch has a working moon-phase complication).
   - `com.utku.almanac` — ordinal date, season, moon, day count, event countdown.
   - `com.utku.commonplacebook` — rotating quote, built-in pool + optional file.
   - `com.utku.hourglass` — Pomodoro timer drawn as a draining hourglass.
+  - `com.utku.quickaccess` — configurable launcher grid; pipe-separated `label | icon | command` items.
+- Per-widget **text size** slider (50–250%) on every plasmoid via a
+  new `textScale` config entry. Default 1.25 so labels are visibly
+  larger out of the box; tunable per instance.
 - `backgroundOpacity` (10–100%) and `edgeStyle` (rounded/ripped/deckle/
   stamped/embossed) config for every plasmoid, wired to
   `ParchmentBackground`.

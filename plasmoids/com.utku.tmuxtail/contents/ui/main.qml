@@ -9,6 +9,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property string tmuxTarget: Plasmoid.configuration.tmuxTarget
@@ -109,7 +111,7 @@ PlasmoidItem {
                       : "// session not found"
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 19
+                font.pixelSize: 19 * root.ts
                 Layout.fillWidth: true
             }
 
@@ -127,7 +129,7 @@ PlasmoidItem {
                     id: logView
                     text: root.paneContent
                     font.family: Shared.Palette.fontMono
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                     color: Shared.Palette.inkDark
                     readOnly: true
                     wrapMode: TextArea.NoWrap

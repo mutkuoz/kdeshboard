@@ -7,6 +7,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property string cityName:    Plasmoid.configuration.cityName
@@ -204,7 +206,7 @@ PlasmoidItem {
                 text: root.cityName
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 15
+                font.pixelSize: 15 * root.ts
                 font.letterSpacing: 1.6
             }
             Loader { sourceComponent: Shared.Ornaments.DoubleRule; Layout.fillWidth: true; Layout.topMargin: 2 }
@@ -213,7 +215,7 @@ PlasmoidItem {
                 text: root.line1
                 color: root.silent ? Shared.Palette.inkMedium : Shared.Palette.inkDark
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 16
+                font.pixelSize: 16 * root.ts
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.topMargin: 4
@@ -223,7 +225,7 @@ PlasmoidItem {
                 text: root.line2
                 color: Shared.Palette.inkMedium
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 13
+                font.pixelSize: 13 * root.ts
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
@@ -232,7 +234,7 @@ PlasmoidItem {
                 text: root.line3
                 color: Shared.Palette.inkMedium
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 13
+                font.pixelSize: 13 * root.ts
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }

@@ -8,6 +8,7 @@ Kirigami.FormLayout {
     property alias cfg_refreshMinutes:    refreshSpin.value
     property alias cfg_units:             unitsField.text
     property alias cfg_backgroundOpacity: opacitySlider.value
+    property alias cfg_textScale:         textScaleSlider.value
     property alias cfg_edgeStyle:         edgeCombo.selectedValue
 
     TextField {
@@ -26,6 +27,23 @@ Kirigami.FormLayout {
         Kirigami.FormData.label: "Units:"
         placeholderText: "metric or imperial"
     }
+    RowLayout {
+        Kirigami.FormData.label: "Text size:"
+        Layout.preferredWidth: 280
+        Slider {
+            id: textScaleSlider
+            from: 0.7
+            to: 2.0
+            stepSize: 0.05
+            Layout.fillWidth: true
+            Layout.preferredWidth: 200
+        }
+        Label {
+            text: Math.round(textScaleSlider.value * 100) + "%"
+            Layout.preferredWidth: 36
+        }
+    }
+
     RowLayout {
         Kirigami.FormData.label: "Background opacity:"
         Layout.preferredWidth: 280
