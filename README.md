@@ -15,7 +15,7 @@ Three moving pieces — all the rest is Plasma itself:
 2. **Nine fonts** installed user-local: Parisienne, Caveat, Cormorant
    Garamond (Light / Regular / Medium / SemiBold), Cormorant SC, IM FELL
    DW Pica, JetBrains Mono.
-3. **Eleven custom plasmoids**, all self-contained after install:
+3. **Twelve custom plasmoids**, all self-contained after install:
    - **Luxury Greeting** — cursive greeting that rotates with the day and
      the week, with a Parisienne drop-cap that gently breathes.
    - **Tmux Tail** — the last N lines of a tmux pane, refreshed on a
@@ -41,10 +41,14 @@ Three moving pieces — all the rest is Plasma itself:
      them (`quote | attribution` lines).
    - **Hourglass** — Pomodoro count-down drawn as an hourglass with
      gilt sand draining between bulbs. Optional command on completion.
+   - **Quick Access** — a configurable grid of icon tiles for launching
+     apps, scripts, or shell commands. Items are pipe-separated lines
+     (`label | icon-name | command`) edited in the wrench dialog.
 
-   Every plasmoid has per-instance **background opacity** (10–100%) and
-   an **edge style** (rounded, ripped paper, deckle, postage-stamp
-   perforations, embossed) under the wrench icon.
+   Every plasmoid has per-instance **background opacity** (10–100%),
+   **edge style** (rounded, ripped paper, deckle, postage-stamp
+   perforations, embossed), and a **text size** multiplier (50–250%)
+   under the wrench icon.
 
 ## Install
 

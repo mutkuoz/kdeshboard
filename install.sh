@@ -193,8 +193,9 @@ Installed. Next steps:
        Luxury Greeting · Tmux Tail · Journal Tasks ·
        Journal Clock · Journal Weather · Journal NowPlaying ·
        System Info · Analog Clock · Almanac ·
-       Commonplace Book · Hourglass.
-     Configure each via the wrench icon.
+       Commonplace Book · Hourglass · Quick Access.
+     Configure each via the wrench icon. Every widget now has a
+     "Text size" slider in its config dialog as well.
   3. (optional) System Settings → Fonts → General "Caveat",
      Fixed Width "JetBrains Mono".
 

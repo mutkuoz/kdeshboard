@@ -7,6 +7,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property string userName: Plasmoid.configuration.userName
@@ -169,7 +171,7 @@ PlasmoidItem {
                     text: root.dropCapLetter
                     color: Shared.Palette.burgundy
                     font.family: Shared.Palette.fontDisplay
-                    font.pixelSize: 48
+                    font.pixelSize: 48 * root.ts
                     SequentialAnimation on opacity {
                         loops: Animation.Infinite
                         NumberAnimation { from: 0.92; to: 1.0; duration: 3000; easing.type: Easing.InOutSine }
@@ -181,7 +183,7 @@ PlasmoidItem {
                     text: root.phraseRemainder
                     color: Shared.Palette.burgundy
                     font.family: Shared.Palette.fontDisplay
-                    font.pixelSize: 44
+                    font.pixelSize: 44 * root.ts
                     Layout.fillWidth: true
                     elide: Text.ElideRight
 
@@ -203,7 +205,7 @@ PlasmoidItem {
                 text: root.subtitleText
                 color: Shared.Palette.inkMedium
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 16
+                font.pixelSize: 16 * root.ts
                 Layout.fillWidth: true
             }
         }

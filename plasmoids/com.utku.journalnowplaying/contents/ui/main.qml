@@ -9,6 +9,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property string preferredPlayer: Plasmoid.configuration.preferredPlayer
@@ -127,7 +129,7 @@ PlasmoidItem {
                 text: root.title || "— no song in the air —"
                 color: Shared.Palette.wax
                 font.family: root.title ? Shared.Palette.fontDisplay : Shared.Palette.fontAccent
-                font.pixelSize: root.title ? 22 : 14
+                font.pixelSize: (root.title ? 22 : 14) * root.ts
                 elide: Text.ElideRight
                 Layout.fillWidth: true
             }
@@ -136,7 +138,7 @@ PlasmoidItem {
                 text: root.artist
                 color: Shared.Palette.inkMedium
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 14
+                font.pixelSize: 14 * root.ts
                 elide: Text.ElideRight
                 Layout.fillWidth: true
             }
@@ -145,7 +147,7 @@ PlasmoidItem {
                 text: root.album
                 color: Shared.Palette.inkMedium
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 15
+                font.pixelSize: 15 * root.ts
                 font.italic: true
                 elide: Text.ElideRight
                 Layout.fillWidth: true
@@ -213,7 +215,7 @@ PlasmoidItem {
                     text: modelData.label
                     color: controlMouse.containsMouse ? Shared.Palette.burgundy : Shared.Palette.wax
                     font.family: Shared.Palette.fontSerif
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                     MouseArea {
                         id: controlMouse
                         anchors.fill: parent

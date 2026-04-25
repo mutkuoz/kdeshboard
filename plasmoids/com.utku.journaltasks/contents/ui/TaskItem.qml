@@ -8,6 +8,7 @@ Item {
     property bool checked: false
     property string body: ""
     property int indent: 0
+    property real ts: 1.0
     signal toggled()
 
     implicitHeight: row.implicitHeight + 4
@@ -34,7 +35,7 @@ Item {
                 text: "✓"
                 color: Shared.Palette.wax
                 font.family: Shared.Palette.fontInitial
-                font.pixelSize: 14
+                font.pixelSize: 14 * root.ts
             }
 
             MouseArea {
@@ -48,7 +49,7 @@ Item {
             text: root.body
             color: root.checked ? Shared.Palette.inkMedium : Shared.Palette.inkDark
             font.family: Shared.Palette.fontSerif
-            font.pixelSize: 14
+            font.pixelSize: 14 * root.ts
             font.strikeout: root.checked
             wrapMode: Text.WordWrap
             Layout.fillWidth: true

@@ -8,6 +8,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property string quotesFile:       Plasmoid.configuration.quotesFile
@@ -152,7 +154,7 @@ PlasmoidItem {
                     text: "COMMONPLACE"
                     color: Shared.Palette.burgundy
                     font.family: Shared.Palette.fontSmallCaps
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                     font.letterSpacing: 2.0
                 }
                 Item { Layout.fillWidth: true }
@@ -160,7 +162,7 @@ PlasmoidItem {
                     text: pool.length > 0 ? (index + 1) + "/" + pool.length : ""
                     color: Shared.Palette.inkMedium
                     font.family: Shared.Palette.fontSmallCaps
-                    font.pixelSize: 12
+                    font.pixelSize: 12 * root.ts
                     font.letterSpacing: 1.2
                 }
             }
@@ -172,7 +174,7 @@ PlasmoidItem {
                 color: Shared.Palette.inkDark
                 font.family: Shared.Palette.fontSerif
                 font.italic: true
-                font.pixelSize: 16
+                font.pixelSize: 16 * root.ts
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -186,7 +188,7 @@ PlasmoidItem {
                 text: pool.length > 0 && pool[index].a ? "— " + pool[index].a : ""
                 color: Shared.Palette.wax
                 font.family: Shared.Palette.fontAccent
-                font.pixelSize: 13
+                font.pixelSize: 13 * root.ts
                 horizontalAlignment: Text.AlignRight
                 Layout.fillWidth: true
             }

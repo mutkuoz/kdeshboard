@@ -23,5 +23,10 @@
     <entry name="watchSubtitle" type="String">
       <default>AUTOMATIC</default>
     </entry>
+    <entry name="textScale" type="Double">
+      <default>1.25</default>
+      <min>0.5</min>
+      <max>2.5</max>
+    </entry>
   </group>
 </kcfg>

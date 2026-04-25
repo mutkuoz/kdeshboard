@@ -51,6 +51,7 @@ PLASMOIDS=(
     com.utku.almanac
     com.utku.commonplacebook
     com.utku.hourglass
+    com.utku.quickaccess
 )
 
 say "Removing plasmoids"

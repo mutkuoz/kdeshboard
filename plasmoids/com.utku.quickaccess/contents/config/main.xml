@@ -3,19 +3,27 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
                           http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
-  <kcfgfile name="journaltasksrc"/>
+  <kcfgfile name="quickaccessrc"/>
   <group name="General">
-    <entry name="filePath" type="String">
-      <default>~/notes/tasks.md</default>
+    <entry name="itemsText" type="String">
+      <default>Files|system-file-manager|dolphin
+Terminal|utilities-terminal|konsole
+Browser|internet-web-browser|xdg-open https:
+Settings|preferences-system|systemsettings
+Editor|accessories-text-editor|kate
+Calculator|accessories-calculator|kcalc
+Spectacle|spectacle|spectacle
+Lock|system-lock-screen|loginctl lock-session
+Logout|system-shutdown|qdbus6 org.kde.LogoutPrompt /LogoutPrompt org.kde.LogoutPrompt.promptAll</default>
     </entry>
-    <entry name="showCompleted" type="Bool">
+    <entry name="iconSize" type="Int">
+      <default>40</default>
+    </entry>
+    <entry name="columns" type="Int">
+      <default>3</default>
+    </entry>
+    <entry name="showLabels" type="Bool">
       <default>true</default>
-    </entry>
-    <entry name="sectionFilter" type="String">
-      <default></default>
-    </entry>
-    <entry name="refreshMs" type="Int">
-      <default>2000</default>
     </entry>
     <entry name="backgroundOpacity" type="Double">
       <default>1.0</default>

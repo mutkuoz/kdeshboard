@@ -8,6 +8,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property int    durationMinutes:   Plasmoid.configuration.durationMinutes
@@ -114,7 +116,7 @@ PlasmoidItem {
                 text: "HOURGLASS"
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 14
+                font.pixelSize: 14 * root.ts
                 font.letterSpacing: 2.0
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -244,7 +246,7 @@ PlasmoidItem {
                 color: Shared.Palette.inkDark
                 font.family: Shared.Palette.fontSerif
                 font.weight: Font.DemiBold
-                font.pixelSize: 22
+                font.pixelSize: 22 * root.ts
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -257,7 +259,7 @@ PlasmoidItem {
                     text: root.running ? "pause" : "start"
                     color: startMouse.containsMouse ? Shared.Palette.wax : Shared.Palette.burgundy
                     font.family: Shared.Palette.fontAccent
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                     MouseArea {
                         id: startMouse
                         anchors.fill: parent
@@ -270,14 +272,14 @@ PlasmoidItem {
                     text: "·"
                     color: Shared.Palette.inkMedium
                     font.family: Shared.Palette.fontAccent
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                 }
                 Text {
                     id: resetBtn
                     text: "reset"
                     color: resetMouse.containsMouse ? Shared.Palette.wax : Shared.Palette.burgundy
                     font.family: Shared.Palette.fontAccent
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * root.ts
                     MouseArea {
                         id: resetMouse
                         anchors.fill: parent

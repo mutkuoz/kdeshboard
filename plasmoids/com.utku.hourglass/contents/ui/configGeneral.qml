@@ -8,6 +8,7 @@ Kirigami.FormLayout {
     property alias cfg_completionCommand: cmdField.text
     property alias cfg_autoRepeat:        repeatBox.checked
     property alias cfg_backgroundOpacity: opacitySlider.value
+    property alias cfg_textScale:         textScaleSlider.value
     property alias cfg_edgeStyle:         edgeCombo.selectedValue
 
     SpinBox {
@@ -25,6 +26,23 @@ Kirigami.FormLayout {
         id: repeatBox
         Kirigami.FormData.label: "Auto-repeat when done:"
     }
+    RowLayout {
+        Kirigami.FormData.label: "Text size:"
+        Layout.preferredWidth: 280
+        Slider {
+            id: textScaleSlider
+            from: 0.7
+            to: 2.0
+            stepSize: 0.05
+            Layout.fillWidth: true
+            Layout.preferredWidth: 200
+        }
+        Label {
+            text: Math.round(textScaleSlider.value * 100) + "%"
+            Layout.preferredWidth: 36
+        }
+    }
+
     RowLayout {
         Kirigami.FormData.label: "Background opacity:"
         Layout.preferredWidth: 280

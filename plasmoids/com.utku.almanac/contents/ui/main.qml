@@ -7,6 +7,8 @@ import "shared" as Shared
 PlasmoidItem {
     id: root
 
+
+    property real ts: (Plasmoid.configuration.textScale && Plasmoid.configuration.textScale > 0) ? Plasmoid.configuration.textScale : 1.25
     preferredRepresentation: fullRepresentation
 
     property string upcomingLabel: Plasmoid.configuration.upcomingLabel
@@ -145,7 +147,7 @@ PlasmoidItem {
                 text: "ALMANAC"
                 color: Shared.Palette.burgundy
                 font.family: Shared.Palette.fontSmallCaps
-                font.pixelSize: 14
+                font.pixelSize: 1 * root.ts4 * root.ts
                 font.letterSpacing: 2.0
             }
             Loader { sourceComponent: Shared.Ornaments.DoubleRule; Layout.fillWidth: true }
@@ -155,7 +157,7 @@ PlasmoidItem {
                 color: Shared.Palette.inkDark
                 font.family: Shared.Palette.fontSerif
                 font.italic: true
-                font.pixelSize: 16
+                font.pixelSize: 1 * root.ts6 * root.ts
                 Layout.topMargin: 4
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
@@ -163,34 +165,34 @@ PlasmoidItem {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
-                Text { text: "❦"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 }
+                Text { text: "❦"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 * root.ts }
                 Text {
                     text: root.seasonLine
                     color: Shared.Palette.inkMedium
                     font.family: Shared.Palette.fontAccent
-                    font.pixelSize: 14
+                    font.pixelSize: 1 * root.ts4 * root.ts
                 }
             }
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
-                Text { text: "☾"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 }
+                Text { text: "☾"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 * root.ts }
                 Text {
                     text: root.moonLine
                     color: Shared.Palette.inkMedium
                     font.family: Shared.Palette.fontAccent
-                    font.pixelSize: 14
+                    font.pixelSize: 1 * root.ts4 * root.ts
                 }
             }
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
-                Text { text: "§"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 }
+                Text { text: "§"; color: Shared.Palette.gilt; font.family: Shared.Palette.fontSerif; font.pixelSize: 15 * root.ts }
                 Text {
                     text: root.dayCount
                     color: Shared.Palette.inkMedium
                     font.family: Shared.Palette.fontAccent
-                    font.pixelSize: 14
+                    font.pixelSize: 1 * root.ts4 * root.ts
                 }
             }
             Item { Layout.fillHeight: true }
@@ -199,7 +201,7 @@ PlasmoidItem {
                 text: root.countdown
                 color: Shared.Palette.wax
                 font.family: Shared.Palette.fontDisplay
-                font.pixelSize: 15
+                font.pixelSize: 1 * root.ts5 * root.ts
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
             }
