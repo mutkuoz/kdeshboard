@@ -28,7 +28,7 @@ QtObject {
     readonly property string fontDisplay: "Parisienne"
     readonly property string fontAccent:  "Caveat"
     readonly property string fontSerif:   "Cormorant Garamond"
-    readonly property string fontInitial: "IM FELL DW Pica"
+    readonly property string fontInitial: "IM Fell DW Pica"
     readonly property string fontSmallCaps: "Cormorant SC"
     readonly property string fontMono:    "JetBrains Mono"
 }
