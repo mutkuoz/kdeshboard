@@ -46,27 +46,31 @@ PlasmoidItem {
     }
 
     function parseReport(raw) {
+        // Partial update — keys absent from this batch keep their previous
+        // value, so a CPU-only batch from the fast timer doesn't clobber
+        // the last GPU reading from the slower gpuTimer (and vice versa).
         const lines = raw.split("\n")
         const vals = {}
         for (const line of lines) {
             const eq = line.indexOf("=")
             if (eq > 0) vals[line.slice(0, eq)] = line.slice(eq + 1)
         }
-        function num(key) {
+        function num(key, current) {
+            if (!(key in vals)) return current
             const v = parseFloat(vals[key])
             return isNaN(v) ? -1 : v
         }
-        batPct    = num("BAT")
-        batState  = vals["BAT_STATE"] || ""
-        cpuPct    = num("CPU")
-        cpuTemp   = num("CPU_TEMP")
-        memPct    = num("MEM")
-        diskPct   = num("DISK")
-        gpuPct    = num("GPU")
-        gpuTemp   = num("GPU_TEMP")
-        netRxKBs  = num("NET_RX")
-        netTxKBs  = num("NET_TX")
-        pingMs    = num("PING")
+        batPct    = num("BAT",      batPct)
+        batState  = ("BAT_STATE" in vals) ? vals["BAT_STATE"] : batState
+        cpuPct    = num("CPU",      cpuPct)
+        cpuTemp   = num("CPU_TEMP", cpuTemp)
+        memPct    = num("MEM",      memPct)
+        diskPct   = num("DISK",     diskPct)
+        gpuPct    = num("GPU",      gpuPct)
+        gpuTemp   = num("GPU_TEMP", gpuTemp)
+        netRxKBs  = num("NET_RX",   netRxKBs)
+        netTxKBs  = num("NET_TX",   netTxKBs)
+        pingMs    = num("PING",     pingMs)
     }
 
     function buildCommand() {
@@ -93,18 +97,27 @@ PlasmoidItem {
             'disk=$(df -P / 2>/dev/null | awk "NR==2 {gsub(\\"%\\",\\"\\",\\$5); print \\$5}"); ' +
             'ctemp=$(for z in /sys/class/thermal/thermal_zone*/temp; do cat "$z" 2>/dev/null; done | sort -nr | head -n1); ' +
             '[ -n "$ctemp" ] && ctemp=$((ctemp/1000)) || ctemp=-1; ' +
-            'gpu=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); ' +
-            '[ -z "$gpu" ] && gpu=-1; ' +
-            'gtemp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); ' +
-            '[ -z "$gtemp" ] && gtemp=-1; ' +
             (ping
                 ? 'p=$(ping -c 1 -W 1 ' + ping + ' 2>/dev/null | awk -F"/" "/^rtt/ {printf(\\"%d\\", \\$5)}"); ' +
                   '[ -z "$p" ] && p=-1; '
                 : 'p=-1; ') +
             'echo "CPU=$cpu"; echo "CPU_TEMP=$ctemp"; echo "MEM=${mem:--1}"; ' +
-            'echo "DISK=${disk:--1}"; echo "GPU=$gpu"; echo "GPU_TEMP=$gtemp"; ' +
+            'echo "DISK=${disk:--1}"; ' +
             'echo "BAT=${bat:--1}"; echo "BAT_STATE=${bs:-unknown}"; ' +
             'echo "NET_RX=$rxkbs"; echo "NET_TX=$txkbs"; echo "PING=$p"' +
+            '\''
+    }
+
+    function buildGpuCommand() {
+        // Single nvidia-smi for both fields — every invocation wakes a CUDA
+        // context on the dGPU, so we pay that cost once per tick, not twice.
+        return 'bash -c \'' +
+            'out=$(nvidia-smi --query-gpu=utilization.gpu,temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1); ' +
+            'gpu=${out%%,*}; gpu=${gpu// /}; ' +
+            'gtemp=${out##*,}; gtemp=${gtemp// /}; ' +
+            '[ -z "$gpu" ] && gpu=-1; ' +
+            '[ -z "$gtemp" ] && gtemp=-1; ' +
+            'echo "GPU=$gpu"; echo "GPU_TEMP=$gtemp"' +
             '\''
     }
 
@@ -114,6 +127,17 @@ PlasmoidItem {
         repeat: true
         triggeredOnStart: true
         onTriggered: executable.exec(buildCommand())
+    }
+
+    Timer {
+        // Throttled: nvidia-smi wakes the dGPU CUDA context. On Blackwell
+        // GB205 + open kernel module 580.x, sub-5s polling caused Xid 56
+        // display engine hangs (whole desktop froze). Floor at 5s.
+        interval: Math.max(root.refreshMs * 3, 5000)
+        running: root.showGpu
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: executable.exec(buildGpuCommand())
     }
 
     fullRepresentation: Item {
